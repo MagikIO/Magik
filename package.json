@@ -1,0 +1,116 @@
+{
+  "name": "@magikio/magik",
+  "version": "1.0.0",
+  "description": "A powerful, plugin-based Express server framework with decorator-based routing, middleware presets, and lifecycle events",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./decorators": {
+      "import": "./dist/decorators/index.mjs",
+      "require": "./dist/decorators/index.js",
+      "types": "./dist/decorators/index.d.ts"
+    },
+    "./factories": {
+      "import": "./dist/factories/index.mjs",
+      "require": "./dist/factories/index.js",
+      "types": "./dist/factories/index.d.ts"
+    },
+    "./plugins": {
+      "import": "./dist/plugins/index.mjs",
+      "require": "./dist/plugins/index.js",
+      "types": "./dist/plugins/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types/index.mjs",
+      "require": "./dist/types/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./engines": {
+      "import": "./dist/engines/index.mjs",
+      "require": "./dist/engines/index.js",
+      "types": "./dist/engines/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
+    "release": "npm run build && npm publish --access public"
+  },
+  "keywords": [
+    "express",
+    "server",
+    "framework",
+    "typescript",
+    "decorators",
+    "routing",
+    "middleware",
+    "plugin",
+    "api",
+    "rest",
+    "magik"
+  ],
+  "author": "Abourass <github.com/Abourass>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MagikIO/Magik.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MagikIO/Magik/issues"
+  },
+  "homepage": "https://github.com/MagikIO/Magik#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "consola": "^3.2.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "fast-glob": "^3.3.2",
+    "gradient-string": "^2.0.2",
+    "helmet": "^7.1.0",
+    "method-override": "^3.0.0",
+    "reflect-metadata": "^0.2.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/method-override": "^0.0.35",
+    "@types/node": "^20.10.6",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
+    "eslint": "^8.56.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.3"
+  },
+  "peerDependencies": {
+    "zod": "^3.22.0"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    }
+  }
+}
