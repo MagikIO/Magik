@@ -12,10 +12,10 @@ export {
   Patch,
   getRoutes,
   getBasePath,
-} from './decorators';
+} from './decorators/route';
 
 // Factories
-export { createRoute } from './factories';
+export { createRoute } from './factories/route';
 
 // Engines
 export {

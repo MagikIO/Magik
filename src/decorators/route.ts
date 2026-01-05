@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import type { PathSegment, RouteDefinition } from '../types/routes';
+import type { HTTPMethod, PathSegment, RouteDefinition } from '../types/routes';
 
 // ============================================================================
 // Metadata Keys
@@ -26,13 +26,21 @@ const BASE_PATH_KEY = Symbol('basePath');
  * ```
  */
 export function Router(basePath: PathSegment) {
-  return function (target: Function) {
+  return function <T extends new (...args: any[]) => any>(target: T) {
+    // Store the base path on the class
     Reflect.defineMetadata(BASE_PATH_KEY, basePath, target);
 
-    // Add routes method to prototype for easy access
-    target.prototype.getRoutes = function () {
+    // Add helper method to get routes from instance
+    target.prototype.getRoutes = function (): RouteDefinition[] {
       return Reflect.getMetadata(ROUTES_KEY, target) || [];
     };
+
+    // Add helper method to get base path from instance
+    target.prototype.getBasePath = function (): PathSegment {
+      return basePath;
+    };
+
+    return target;
   };
 }
 
@@ -40,14 +48,24 @@ export function Router(basePath: PathSegment) {
 // Method Decorator Factory
 // ============================================================================
 
-function createMethodDecorator(method: 'get' | 'post' | 'put' | 'delete' | 'patch') {
-  return function (path: PathSegment) {
+/**
+ * Internal route metadata stored during decoration.
+ */
+interface RouteMetadata {
+  path: PathSegment;
+  method: HTTPMethod;
+  propertyKey: string;
+  handler: Function;
+}
+
+function createMethodDecorator(method: HTTPMethod) {
+  return function (path: PathSegment = "/") {
     return function (
       target: object,
       propertyKey: string,
       descriptor: PropertyDescriptor,
-    ) {
-      const routes = Reflect.getMetadata(ROUTES_KEY, target.constructor) || [];
+    ): PropertyDescriptor {
+      const routes: RouteMetadata[] = Reflect.getMetadata(ROUTES_KEY, target.constructor) || [];
 
       // Store the original method
       const originalMethod = descriptor.value;
@@ -55,6 +73,8 @@ function createMethodDecorator(method: 'get' | 'post' | 'put' | 'delete' | 'patc
       // Replace descriptor value with wrapper that includes route metadata
       descriptor.value = function () {
         const routeConfig = originalMethod.apply(this);
+
+        // Merge decorator metadata with returned route config
         return {
           ...routeConfig,
           path: path,
@@ -62,6 +82,12 @@ function createMethodDecorator(method: 'get' | 'post' | 'put' | 'delete' | 'patc
           propertyKey,
         };
       };
+
+      // Preserve function name for debugging
+      Object.defineProperty(descriptor.value, 'name', {
+        value: propertyKey,
+        writable: false,
+      });
 
       // Store route metadata for discovery
       routes.push({
@@ -170,26 +196,77 @@ export const Delete = createMethodDecorator('delete');
  */
 export const Patch = createMethodDecorator('patch');
 
+
 // ============================================================================
 // Metadata Accessors
 // ============================================================================
 
 /**
- * Get all routes defined on a router class
+ * Get the base path for a router class.
  *
- * @param target - The router class
- * @returns Array of route definitions
- */
-export function getRoutes(target: Function): RouteDefinition[] {
-  return Reflect.getMetadata(ROUTES_KEY, target) || [];
-}
-
-/**
- * Get the base path for a router class
+ * @param target - The router class (constructor function)
+ * @returns The base path or undefined if not decorated with @Router
  *
- * @param target - The router class
- * @returns The base path or undefined if not decorated
+ * @example
+ * ```typescript
+ * @Router('/users')
+ * class UserRouter {}
+ *
+ * getBasePath(UserRouter); // '/users'
+ * ```
  */
 export function getBasePath(target: Function): PathSegment | undefined {
   return Reflect.getMetadata(BASE_PATH_KEY, target);
 }
+
+/**
+ * Get all routes defined on a router class.
+ *
+ * @param target - The router class (constructor function)
+ * @returns Array of route metadata
+ *
+ * @example
+ * ```typescript
+ * @Router('/users')
+ * class UserRouter {
+ *   @Get('/') list() { ... }
+ *   @Get('/:id') getById() { ... }
+ * }
+ *
+ * getRoutes(UserRouter);
+ * // [
+ * //   { path: '/', method: 'get', propertyKey: 'list', handler: [Function] },
+ * //   { path: '/:id', method: 'get', propertyKey: 'getById', handler: [Function] }
+ * // ]
+ * ```
+ */
+export function getRoutes(target: Function): RouteMetadata[] {
+  return Reflect.getMetadata(ROUTES_KEY, target) || [];
+}
+
+/**
+ * Check if a class is decorated with @Router.
+ *
+ * @param target - The class to check
+ * @returns True if the class has the @Router decorator
+ */
+export function isRouter(target: Function): boolean {
+  return Reflect.hasMetadata(BASE_PATH_KEY, target);
+}
+
+/**
+ * Get all route method names from a router class.
+ *
+ * @param target - The router class
+ * @returns Array of method names that are decorated routes
+ */
+export function getRouteMethodNames(target: Function): string[] {
+  const routes = getRoutes(target);
+  return routes.map((r) => r.propertyKey);
+}
+
+
+
+
+
+
