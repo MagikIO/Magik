@@ -404,10 +404,7 @@ export class MagikServer<
       }
 
       // Discover and register application routes
-      const routeDefinitions = await discoverRoutes(
-        this.DEBUG,
-        this.config.routesDir,
-      );
+      const routeDefinitions = await discoverRoutes(this.config.routeDiscoveryOptions);
 
       for (const [prefix, routes] of routeDefinitions) {
         const engine = this.routerManager.register(prefix);

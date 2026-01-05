@@ -7,6 +7,7 @@ import type { ServerStatusType } from './events';
 import type { MagikPlugin } from './plugins';
 import type { IMagikDatabaseAdapter,MagikDatabaseConfig } from './database';
 import type { AuthConfig } from './auth';
+import type { RouteDiscoveryConfig } from './routes';
 
 /**
  * Server status states.
@@ -148,12 +149,7 @@ export interface MagikServerConfig<
    */
   plugins?: MagikPlugin[];
 
-  /**
-   * Path to routes directory for auto-discovery.
-   * 
-   * @default './src/routes' or './routes'
-   */
-  routesDir?: string;
+  routeDiscoveryOptions?: RouteDiscoveryConfig;
 
   /**
    * Disable automatic route discovery.

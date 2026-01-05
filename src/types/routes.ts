@@ -143,3 +143,54 @@ export type AuthTypes =
   | 'ensureIT'
   | 'ensureIsEmployee'
   | string[];
+
+// ============================================================================
+// Route Discovery Configuration
+// ============================================================================
+
+/**
+ * Configuration for route discovery.
+ */
+export interface RouteDiscoveryConfig {
+  /**
+   * Enable debug logging.
+   * @default false
+   */
+  debug?: boolean;
+
+  /**
+   * Explicit path to routes directory.
+   * If not provided, will search common locations.
+   */
+  routesDir?: string;
+
+  /**
+   * File extensions to look for.
+   * @default ['js', 'ts', 'mjs', 'cjs']
+   */
+  extensions?: string[];
+
+  /**
+   * Glob patterns to ignore.
+   * @default ['**\/*.test.*', '**\/*.spec.*', '**\/*.d.ts', '**\/__tests__/**']
+   */
+  ignore?: string[];
+
+  /**
+   * Base directory for resolving relative paths.
+   * @default process.cwd()
+   */
+  basePath?: string;
+
+  /**
+   * Whether to throw on errors or just log them.
+   * @default false
+   */
+  throwOnError?: boolean;
+
+  /**
+   * Custom route file pattern (overrides extensions).
+   * @example '**\/*Route.{js,ts}'
+   */
+  pattern?: string;
+}

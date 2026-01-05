@@ -1,60 +1,13 @@
-import { resolve, relative, dirname } from 'node:path';
+import { resolve, relative } from 'node:path';
 import { existsSync } from 'node:fs';
 import consola from 'consola';
 import fg from 'fast-glob';
-import { getBasePath, getRoutes } from '../decorators/route';
-import type { PathSegment, RouteDefinition } from '../types/routes';
+import { getBasePath } from '../decorators/route';
+import type { PathSegment, RouteDefinition,RouteDiscoveryConfig } from '../types/routes';
 
 // ============================================================================
 // Types
 // ============================================================================
-
-/**
- * Configuration for route discovery.
- */
-export interface RouteDiscoveryConfig {
-  /**
-   * Enable debug logging.
-   * @default false
-   */
-  debug?: boolean;
-
-  /**
-   * Explicit path to routes directory.
-   * If not provided, will search common locations.
-   */
-  routesDir?: string;
-
-  /**
-   * File extensions to look for.
-   * @default ['js', 'ts', 'mjs', 'cjs']
-   */
-  extensions?: string[];
-
-  /**
-   * Glob patterns to ignore.
-   * @default ['**\/*.test.*', '**\/*.spec.*', '**\/*.d.ts', '**\/__tests__/**']
-   */
-  ignore?: string[];
-
-  /**
-   * Base directory for resolving relative paths.
-   * @default process.cwd()
-   */
-  basePath?: string;
-
-  /**
-   * Whether to throw on errors or just log them.
-   * @default false
-   */
-  throwOnError?: boolean;
-
-  /**
-   * Custom route file pattern (overrides extensions).
-   * @example '**\/*Route.{js,ts}'
-   */
-  pattern?: string;
-}
 
 /**
  * Result of route discovery with metadata.
