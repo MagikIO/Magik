@@ -18,7 +18,6 @@ import type { MagikPlugin } from '../types/plugins';
 import type { PathSegment } from '../types/routes';
 import type { IMagikServer, MagikServerConfig } from '../types/server';
 import type { IMagikDatabaseAdapter, MagikDatabaseConfig } from '../types/database';
-import type { AuthConfig } from '../types/auth';
 import { discoverRoutes } from './discoverRoutes';
 
 const magikEventEmitter = new EventEmitter();

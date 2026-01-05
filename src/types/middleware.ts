@@ -1,5 +1,18 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import type { ErrorRequestHandler, RequestHandler } from 'express';
+import type { Request, Response, NextFunction } from 'express';
+
+export type MagikMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => void | Promise<void>;
+
+export type MagikErrorHandler = (
+  err: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => void | Promise<void>;
 
 // ============================================================================
 // Middleware Categories
@@ -31,12 +44,11 @@ export type AuthTypes =
 // ============================================================================
 
 export interface AuthMiddlewareMap {
-  ensureAuthenticated: RequestHandler;
-  ensureAccessGranted: RequestHandler;
-  ensureAdmin: RequestHandler;
-  ensureIT: RequestHandler;
-  ensureIsEmployee: RequestHandler;
-  [key: string]: RequestHandler;
+  ensureAuthenticated: MagikMiddleware;
+  ensureAccessGranted: (roles: string[]) => MagikMiddleware;
+  ensureAdmin: MagikMiddleware;
+  ensureIT: MagikMiddleware;
+  ensureIsEmployee: MagikMiddleware;
 }
 
 // ============================================================================
@@ -44,8 +56,8 @@ export interface AuthMiddlewareMap {
 // ============================================================================
 
 export type MiddlewareFn =
-  | RequestHandler
-  | ErrorRequestHandler
+  | MagikMiddleware
+  | MagikErrorHandler
   | ((
       req: IncomingMessage,
       res: ServerResponse<IncomingMessage>,

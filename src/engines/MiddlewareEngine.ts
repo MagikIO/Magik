@@ -1,5 +1,6 @@
 import consola from 'consola';
-import type { Express, RequestHandler } from 'express';
+import type { Express } from 'express';
+import type { RequestHandler } from 'express-serve-static-core';
 import type { IMiddlewareEngine } from '../types/engines';
 import type {
   AuthMiddlewareMap,
@@ -8,7 +9,7 @@ import type {
   MiddlewarePreset,
 } from '../types/middleware';
 import type { AuthConfig, AuthTypes } from '../types/auth';
-import { createPlaceholderAuth, isRoleArray } from '../types/auth';
+import { isRoleArray } from '../types/auth';
 import { allPresets } from '../presets';
 
 /**

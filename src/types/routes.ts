@@ -1,4 +1,9 @@
-import type { NextFunction, Request, RequestHandler, Response } from 'express';
+import type {
+  NextFunction,
+  Request,
+  RequestHandler,
+  Response,
+} from 'express';
 import type { z } from 'zod';
 
 // ============================================================================
