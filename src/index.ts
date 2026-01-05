@@ -69,7 +69,7 @@ export type {
   PluginRouteMap,
   MagikPlugin,
   // Server
-  ServerConfig,
+  MagikServerConfig,
   IMagikServer,
   // Engines
   IMiddlewareEngine,

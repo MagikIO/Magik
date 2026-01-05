@@ -2,13 +2,12 @@ import consola from 'consola';
 import { Router, type RequestHandler, type Response, type NextFunction } from 'express';
 import type { ZodSchema } from 'zod';
 import type { IRouteEngine } from '../types/engines';
-import type { AuthTypes, MiddlewareConfig } from '../types/middleware';
+import type { AuthTypes } from '../types/middleware';
 import type {
   HTTPMethod,
   MagikRequest,
   PathSegment,
-  RouteDefinition,
-  UploadConfig,
+  RouteDefinition
 } from '../types/routes';
 import type { IMagikServer } from '../types/server';
 

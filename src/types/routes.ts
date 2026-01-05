@@ -5,6 +5,7 @@ import type {
   Response,
 } from 'express';
 import type { z } from 'zod';
+import type { AuthTypes } from './auth';
 
 // ============================================================================
 // Path Types
@@ -61,10 +62,18 @@ export type MagikGetRouteFn = (
 // Upload Configuration
 // ============================================================================
 
+/**
+ * Configuration for file upload handling.
+ */
 export interface UploadConfig {
+  /** Field name for the file(s) */
   field: string;
-  multer: string;
+  /** Multer method to use */
+  multer: 'single' | 'array' | 'fields' | 'none' | 'any';
+  /** Whether multiple files are allowed */
   multi?: boolean;
+  /** Maximum number of files (for array/fields) */
+  maxCount?: number;
 }
 
 // ============================================================================
@@ -131,18 +140,6 @@ export interface RouteConfig<
       ) => Promise<void>;
   upload?: UploadConfig;
 }
-
-// ============================================================================
-// Auth Types (imported here for convenience)
-// ============================================================================
-
-export type AuthTypes =
-  | 'ensureAuthenticated'
-  | 'ensureAccessGranted'
-  | 'ensureAdmin'
-  | 'ensureIT'
-  | 'ensureIsEmployee'
-  | string[];
 
 // ============================================================================
 // Route Discovery Configuration
