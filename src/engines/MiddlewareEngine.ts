@@ -3,93 +3,116 @@ import type { Express, RequestHandler } from 'express';
 import type { IMiddlewareEngine } from '../types/engines';
 import type {
   AuthMiddlewareMap,
-  AuthTypes,
   MiddlewareCategory,
   MiddlewareConfig,
   MiddlewarePreset,
 } from '../types/middleware';
+import type { AuthConfig, AuthTypes } from '../types/auth';
+import { createPlaceholderAuth, isRoleArray } from '../types/auth';
 import { allPresets } from '../presets';
 
 /**
- * MiddlewareEngine manages middleware registration, ordering, and application
- *
- * Middleware is organized into categories with priority ordering:
- * - security (90-100): Helmet, CORS, rate limiting
- * - session (70-89): Session management, cookies
- * - parser (80-89): Body parsing, JSON, URL-encoded
- * - compression (60-69): Response compression
- * - logging (50-59): Request logging
- * - static (40-49): Static file serving
- * - custom (0-39): Application middleware
- *
+ * MiddlewareEngine manages middleware registration, ordering, and application.
+ * 
+ * Now accepts auth configuration at construction time, allowing users to
+ * define their own auth types rather than using hardcoded defaults.
+ * 
  * @example
  * ```typescript
- * const middlewareEngine = new MiddlewareEngine(app, true);
- *
- * middlewareEngine.register({
- *   name: 'request-timer',
- *   category: 'logging',
- *   priority: 55,
- *   handler: (req, res, next) => {
- *     const start = Date.now();
- *     res.on('finish', () => {
- *       console.log(`${req.method} ${req.path} - ${Date.now() - start}ms`);
- *     });
- *     next();
+ * const middlewareEngine = new MiddlewareEngine(app, true, {
+ *   handlers: {
+ *     ensureAuthenticated: (req, res, next) => {
+ *       if (!req.user) return res.status(401).send('Unauthorized');
+ *       next();
+ *     },
+ *     ensureAdmin: (req, res, next) => {
+ *       if (!req.user?.isAdmin) return res.status(403).send('Forbidden');
+ *       next();
+ *     },
+ *   },
+ *   roleHandler: (roles) => (req, res, next) => {
+ *     const userRoles = req.user?.roles ?? [];
+ *     if (roles.some(r => userRoles.includes(r))) return next();
+ *     res.status(403).send('Forbidden');
  *   },
  * });
- *
- * middlewareEngine.applyCategory('logging');
  * ```
  */
 export class MiddlewareEngine implements IMiddlewareEngine {
   private middlewareRegistry = new Map<string, MiddlewareConfig>();
   private orderedMiddleware: MiddlewareConfig[] = [];
-
-  private authMiddleware: AuthMiddlewareMap = {
-    ensureAuthenticated: this.createPlaceholderAuth('ensureAuthenticated'),
-    ensureAccessGranted: this.createPlaceholderAuth('ensureAccessGranted'),
-    ensureAdmin: this.createPlaceholderAuth('ensureAdmin'),
-    ensureIT: this.createPlaceholderAuth('ensureIT'),
-    ensureIsEmployee: this.createPlaceholderAuth('ensureIsEmployee'),
-  };
+  private authMiddleware: AuthMiddlewareMap = {};
+  private roleHandler?: (roles: string[]) => RequestHandler;
+  private fallbackHandler?: (authType: string) => RequestHandler;
 
   constructor(
     private app: Express,
     private debug = false,
+    authConfig?: AuthConfig,
   ) {
-    // Load all built-in presets
+    // Load built-in presets
     allPresets.forEach((preset) => {
       this.registerBulk(preset.middlewares);
       this.debug && consola.info(`[MiddlewareEngine] Loaded preset: ${preset.name}`);
     });
+
+    // Configure auth from config
+    if (authConfig) {
+      this.configureAuth(authConfig);
+    }
   }
 
   /**
-   * Create a placeholder auth middleware that throws an error
-   * These should be replaced by the actual auth implementation
+   * Configure authentication middleware from config.
+   * 
+   * This can be called after construction to update auth configuration.
    */
-  private createPlaceholderAuth(name: string): RequestHandler {
-    return (_req, _res, next) => {
-      next(new Error(`Auth middleware "${name}" not configured. Install an auth plugin.`));
-    };
+  public configureAuth(config: AuthConfig): this {
+    // Set handlers
+    if (config.handlers) {
+      this.authMiddleware = { ...config.handlers };
+      this.debug && consola.info(
+        `[MiddlewareEngine] Configured ${Object.keys(config.handlers).length} auth handler(s)`,
+      );
+    }
+
+    // Set role handler
+    if (config.roleHandler) {
+      this.roleHandler = config.roleHandler;
+      this.debug && consola.info('[MiddlewareEngine] Configured role handler');
+    }
+
+    // Set fallback handler
+    if (config.fallbackHandler) {
+      this.fallbackHandler = config.fallbackHandler;
+    }
+
+    return this;
   }
 
   /**
-   * Check if a middleware is registered
-   *
-   * @param name - The middleware name
-   * @returns true if registered
+   * Check if a middleware is registered.
    */
   public hasMiddleware(name: string): boolean {
     return this.middlewareRegistry.has(name);
   }
 
   /**
-   * Register a single middleware configuration
-   *
-   * @param config - The middleware configuration
-   * @returns this for chaining
+   * Check if an auth type is configured.
+   */
+  public hasAuthType(authType: string): boolean {
+    return authType in this.authMiddleware;
+  }
+
+  /**
+   * Get all configured auth type names.
+   */
+  public getAuthTypes(): string[] {
+    return Object.keys(this.authMiddleware);
+  }
+
+  /**
+   * Register a single middleware configuration.
    */
   register(config: MiddlewareConfig): this {
     try {
@@ -104,10 +127,7 @@ export class MiddlewareEngine implements IMiddlewareEngine {
   }
 
   /**
-   * Register multiple middleware configurations
-   *
-   * @param configs - Array of middleware configurations
-   * @returns this for chaining
+   * Register multiple middleware configurations.
    */
   registerBulk(configs: MiddlewareConfig[]): this {
     configs.forEach((config) => this.register(config));
@@ -115,10 +135,7 @@ export class MiddlewareEngine implements IMiddlewareEngine {
   }
 
   /**
-   * Register a complete middleware preset
-   *
-   * @param preset - The preset containing multiple middleware configs
-   * @returns this for chaining
+   * Register a complete middleware preset.
    */
   registerPreset(preset: MiddlewarePreset): this {
     this.registerBulk(preset.middlewares);
@@ -127,10 +144,7 @@ export class MiddlewareEngine implements IMiddlewareEngine {
   }
 
   /**
-   * Enable a middleware by name
-   *
-   * @param name - The middleware name to enable
-   * @returns this for chaining
+   * Enable a middleware by name.
    */
   enable(name: string): this {
     const middleware = this.middlewareRegistry.get(name);
@@ -141,10 +155,7 @@ export class MiddlewareEngine implements IMiddlewareEngine {
   }
 
   /**
-   * Disable a middleware by name
-   *
-   * @param name - The middleware name to disable
-   * @returns this for chaining
+   * Disable a middleware by name.
    */
   disable(name: string): this {
     const middleware = this.middlewareRegistry.get(name);
@@ -155,15 +166,9 @@ export class MiddlewareEngine implements IMiddlewareEngine {
   }
 
   /**
-   * Apply all middleware in a category to the Express app
-   *
-   * @param category - The middleware category to apply
-   * @returns this for chaining
+   * Apply all middleware in a category to the Express app.
    */
   applyCategory(category: MiddlewareCategory): this {
-    const categoryMiddleware = Array.from(this.middlewareRegistry.values())
-      .filter((m) => m.category === category && m.enabled !== false);
-
     this.orderMiddleware();
     const ordered = this.orderedMiddleware.filter((m) => m.category === category);
     this.applyMiddleware(ordered);
@@ -177,59 +182,68 @@ export class MiddlewareEngine implements IMiddlewareEngine {
   }
 
   /**
-   * Set custom auth middleware handlers
-   *
-   * @param handlers - Partial map of auth handlers to set
-   * @returns this for chaining
+   * Get the auth middleware handler for the given auth type.
+   * 
+   * @param auth - Auth type name or array of roles
+   * @returns The middleware handler
+   * @throws Error if auth type is not configured and no fallback exists
    */
-  setAuthMiddleware(handlers: Partial<AuthMiddlewareMap>): this {
-    Object.assign(this.authMiddleware, handlers);
+  getAuthMiddleware(auth: AuthTypes): RequestHandler {
+    // Handle role array
+    if (isRoleArray(auth)) {
+      if (!this.roleHandler) {
+        throw new Error(
+          '[MiddlewareEngine] Role-based auth used but no roleHandler configured. ' +
+          'Add a roleHandler to your auth config.',
+        );
+      }
+      return this.roleHandler(auth);
+    }
+
+    // Handle named auth type
+    const middleware = this.authMiddleware[auth];
+    
+    if (middleware) {
+      return middleware;
+    }
+
+    // Try fallback handler
+    if (this.fallbackHandler) {
+      return this.fallbackHandler(auth);
+    }
+
+    // No handler found - provide helpful error
+    const availableTypes = Object.keys(this.authMiddleware);
+    const suggestion = availableTypes.length > 0
+      ? `Available types: ${availableTypes.join(', ')}`
+      : 'No auth types configured. Add handlers to your auth config.';
+
+    throw new Error(
+      `[MiddlewareEngine] Unknown auth type: "${auth}". ${suggestion}`,
+    );
+  }
+
+  /**
+   * Add or update a single auth handler.
+   * 
+   * Useful for plugins that want to register auth types.
+   */
+  setAuthHandler(name: string, handler: RequestHandler): this {
+    this.authMiddleware[name] = handler;
+    this.debug && consola.info(`[MiddlewareEngine] Set auth handler: ${name}`);
     return this;
   }
 
   /**
-   * Get the auth middleware handler for the given auth type
-   *
-   * @param auth - The auth type or array of roles
-   * @returns The middleware handler
+   * Remove an auth handler.
    */
-  getAuthMiddleware(auth: AuthTypes): RequestHandler {
-    // Handle role array auth
-    if (Array.isArray(auth)) {
-      return this.createRoleMiddleware(auth);
-    }
-
-    const middleware = this.authMiddleware[auth];
-    if (!middleware) {
-      throw new Error(`[MiddlewareEngine] Unknown auth type: ${auth}`);
-    }
-
-    return middleware;
+  removeAuthHandler(name: string): this {
+    delete this.authMiddleware[name];
+    return this;
   }
 
   /**
-   * Create middleware that checks for any of the specified roles
-   */
-  private createRoleMiddleware(roles: string[]): RequestHandler {
-    return (req, _res, next) => {
-      const user = req.user as { roles?: string[] } | undefined;
-      if (!user) {
-        return next(new Error('Authentication required'));
-      }
-
-      const userRoles = user.roles || [];
-      const hasRole = roles.some((role) => userRoles.includes(role));
-
-      if (!hasRole) {
-        return next(new Error(`Required role(s): ${roles.join(', ')}`));
-      }
-
-      next();
-    };
-  }
-
-  /**
-   * Validate a middleware configuration
+   * Validate a middleware configuration.
    */
   private validateMiddleware(config: MiddlewareConfig) {
     if (!config?.name) {
@@ -269,7 +283,7 @@ export class MiddlewareEngine implements IMiddlewareEngine {
   }
 
   /**
-   * Order middleware by priority and dependencies
+   * Order middleware by priority and dependencies.
    */
   private orderMiddleware() {
     const middlewares = Array.from(this.middlewareRegistry.values()).filter(
@@ -292,7 +306,7 @@ export class MiddlewareEngine implements IMiddlewareEngine {
   }
 
   /**
-   * Apply middleware handlers to the Express app
+   * Apply middleware handlers to the Express app.
    */
   private applyMiddleware(middlewares: MiddlewareConfig[]) {
     middlewares.forEach((m) => {

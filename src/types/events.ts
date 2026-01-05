@@ -26,7 +26,7 @@ export interface ServerStatus {
   readonly SHUTTING_DOWN: 'SHUTTING_DOWN';
 }
 
-export type ServerStatusType = 'ONLINE' | 'OFFLINE' | 'SHUTTING_DOWN';
+export type ServerStatusType = 'ONLINE' | 'OFFLINE' | 'SHUTTING_DOWN' | 'STARTING' | 'ERROR';
 
 // ============================================================================
 // Event Handler Types
