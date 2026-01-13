@@ -1,0 +1,63 @@
+{
+  "folders": [
+    {
+      "name": "🪄 Magik (Root)",
+      "path": "."
+    },
+    {
+      "name": "📦 Core: magik",
+      "path": "apps/magik"
+    },
+    {
+      "name": "🔒 preset-security",
+      "path": "packages/preset-security"
+    },
+    {
+      "name": "📝 preset-parser",
+      "path": "packages/preset-parser"
+    },
+    {
+      "name": "🔐 preset-session",
+      "path": "packages/preset-session"
+    },
+    {
+      "name": "🗄️ session-redis",
+      "path": "packages/session-redis"
+    },
+    {
+      "name": "💾 session-memory",
+      "path": "packages/session-memory"
+    },
+    {
+      "name": "☁️ upload-s3",
+      "path": "packages/upload-s3"
+    },
+    {
+      "name": "📁 upload-local",
+      "path": "packages/upload-local"
+    }
+  ],
+  "settings": {
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "biomejs.biome",
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/.moon/cache": true
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/.moon/cache": true,
+      "**/pnpm-lock.yaml": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "biomejs.biome",
+      "moonrepo.moon-console"
+    ]
+  }
+}
