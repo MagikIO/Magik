@@ -1,0 +1,9 @@
+# moon project configuration for @magik_io/preset-compression
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: 'library'
+language: 'typescript'
+tags: ['preset', 'compression', 'middleware']
+
+dependsOn:
+  - 'magik'

@@ -1,0 +1,50 @@
+{
+  "name": "@magik_io/preset-compression",
+  "version": "1.0.0",
+  "description": "Compression middleware preset for Magik (gzip, deflate, brotli)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "magik",
+    "compression",
+    "gzip",
+    "brotli",
+    "middleware"
+  ],
+  "author": "Abourass",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MagikIO/Magik.git",
+    "directory": "packages/preset-compression"
+  },
+  "peerDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/express-serve-static-core": "^5.1.0",
+    "express": "^4.21.2",
+    "express-serve-static-core": "^0.1.1"
+  },
+  "dependencies": {
+    "@magik_io/magik": "workspace:*",
+    "compression": "^1.8.1"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.8.1",
+    "typescript": "^5.3.3"
+  }
+}
