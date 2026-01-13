@@ -1,0 +1,8 @@
+# Moonrepo ignore patterns
+node_modules/
+dist/
+.turbo/
+.moon/cache/
+*.log
+.env
+.env.*
