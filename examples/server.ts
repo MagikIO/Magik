@@ -14,6 +14,8 @@ import {
   GracefulShutdownPlugin,
   RateLimiterPlugin,
 } from '../src/plugins';
+// Import presets - these are now opt-in and must be explicitly included
+import { allPresets } from '../src/presets';
 
 async function main() {
   // Initialize the server
@@ -22,6 +24,10 @@ async function main() {
     port: 3000,
     debug: true,
     mode: 'development',
+    // Presets are no longer auto-loaded - explicitly include the ones you need
+    // Use allPresets for all built-in presets, or pick specific ones:
+    // presets: [securityPreset, parserPreset],
+    presets: allPresets,
   });
 
   // Install plugins

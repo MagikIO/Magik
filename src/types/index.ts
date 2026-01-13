@@ -33,6 +33,37 @@ export type {
 export { isDatabaseAdapter } from './database';
 
 // ============================================================================
+// Repository Types
+// ============================================================================
+export type {
+  QueryOptions,
+  PopulateOptions,
+  IRepository,
+  IRepositoryRegistry,
+  IRepositoryFactory,
+  IExtendedRepository,
+  RepositoryConfig,
+  InferEntity,
+  InferId,
+} from './repository';
+
+// ============================================================================
+// User Adapter Types
+// ============================================================================
+export type {
+  IUserAdapter,
+  SimpleUser,
+  InferUser,
+} from './user-adapter';
+
+export {
+  GenericUserAdapter,
+  SimpleUserAdapter,
+  isUserAdapter,
+  createUserAdapter,
+} from './user-adapter';
+
+// ============================================================================
 // Engine Types
 // ============================================================================
 export type {

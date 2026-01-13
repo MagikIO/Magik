@@ -1,4 +1,5 @@
 import type { RequestHandler } from 'express-serve-static-core';
+import type { IUserAdapter } from './user-adapter.js';
 
 // ============================================================================
 // Auth Configuration
@@ -40,10 +41,10 @@ import type { RequestHandler } from 'express-serve-static-core';
  * };
  * ```
  */
-export interface AuthConfig<TAuthTypes extends string = string> {
+export interface AuthConfig<TAuthTypes extends string = string, TUser = unknown> {
   /**
    * Map of auth type names to their middleware handlers.
-   * 
+   *
    * The keys become the valid values for `auth` in route definitions.
    * For example, if you define `ensureAuthenticated`, you can use:
    * ```typescript
@@ -54,13 +55,13 @@ export interface AuthConfig<TAuthTypes extends string = string> {
 
   /**
    * Handler factory for role-based auth.
-   * 
+   *
    * When a route uses an array for auth (e.g., `auth: ['admin', 'moderator']`),
    * this function is called to create the middleware.
-   * 
+   *
    * @param roles - The roles required for the route
    * @returns Middleware that checks if user has any of the roles
-   * 
+   *
    * @example
    * ```typescript
    * roleHandler: (roles) => (req, res, next) => {
@@ -76,11 +77,35 @@ export interface AuthConfig<TAuthTypes extends string = string> {
 
   /**
    * Fallback handler when an unknown auth type is requested.
-   * 
+   *
    * If not provided, unknown auth types will throw an error.
    * This can be useful for development/debugging.
    */
   fallbackHandler?: (authType: string) => RequestHandler;
+
+  /**
+   * Optional user adapter for standardized role/permission access.
+   *
+   * When provided, the framework can use this adapter to access user
+   * roles and permissions without knowing your user schema. This enables
+   * built-in role-based middleware helpers.
+   *
+   * @example
+   * ```typescript
+   * auth: {
+   *   userAdapter: new MyUserAdapter(),
+   *   handlers: {
+   *     ensureAuthenticated: (req, res, next) => {
+   *       if (req.user) return next();
+   *       res.status(401).json({ error: 'Unauthorized' });
+   *     },
+   *   },
+   *   // roleHandler can now use the adapter!
+   *   roleHandler: (roles) => createRoleMiddleware(userAdapter, roles),
+   * }
+   * ```
+   */
+  userAdapter?: IUserAdapter<TUser>;
 }
 
 // ============================================================================

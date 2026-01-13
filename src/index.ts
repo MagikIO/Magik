@@ -37,6 +37,21 @@ export {
 // Presets
 export { allPresets, parserPreset, securityPreset } from './presets';
 
+// Auth Helpers
+export {
+  createRoleMiddleware,
+  createAllRolesMiddleware,
+  createPermissionMiddleware,
+  createAllPermissionsMiddleware,
+  createAuthenticatedMiddleware,
+  createTwoFactorMiddleware,
+  createRoleHandlerFactory,
+  createPermissionHandlerFactory,
+  createAuthWithRolesMiddleware,
+} from './helpers/auth';
+
+export type { AuthMiddlewareOptions } from './helpers/auth';
+
 // Types
 export type {
   // Routes
@@ -76,4 +91,43 @@ export type {
   IRouteEngine,
   IPluginEngine,
   IEventEngine,
+  // Database
+  ConnectionState,
+  ConnectionOptions,
+  ConnectionHooks,
+  ConnectionResult,
+  IMagikDatabaseAdapter,
+  MagikDatabaseConfig,
+  InferConnection,
+  InferServices,
+  // Repository
+  QueryOptions,
+  PopulateOptions,
+  IRepository,
+  IRepositoryRegistry,
+  IRepositoryFactory,
+  IExtendedRepository,
+  RepositoryConfig,
+  InferEntity,
+  InferId,
+  // User Adapter
+  IUserAdapter,
+  SimpleUser,
+  InferUser,
+  // Auth
+  AuthConfig,
+  ExtractAuthTypes,
+} from './types';
+
+// Re-export utilities from types
+export {
+  isDatabaseAdapter,
+  isRoleArray,
+  createPlaceholderAuth,
+  createPassthroughAuth,
+  createDenyAuth,
+  GenericUserAdapter,
+  SimpleUserAdapter,
+  isUserAdapter,
+  createUserAdapter,
 } from './types';

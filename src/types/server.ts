@@ -5,7 +5,8 @@ import type { MiddlewareEngine } from '../engines/MiddlewareEngine';
 import type { RouterManager } from '../engines/RouterManager';
 import type { ServerStatusType } from './events';
 import type { MagikPlugin } from './plugins';
-import type { IMagikDatabaseAdapter,MagikDatabaseConfig } from './database';
+import type { MiddlewarePreset } from './middleware';
+import type { IMagikDatabaseAdapter, MagikDatabaseConfig } from './database';
 import type { AuthConfig } from './auth';
 import type { RouteDiscoveryConfig } from './routes';
 
@@ -143,11 +144,34 @@ export interface MagikServerConfig<
 
   /**
    * Plugins to install during initialization.
-   * 
+   *
    * These are installed in order after the server is created
    * but before it starts listening.
    */
   plugins?: MagikPlugin[];
+
+  /**
+   * Middleware presets to apply during initialization.
+   *
+   * Presets are no longer automatically loaded - you must explicitly
+   * include the ones you want. This allows for full control over
+   * which middleware is applied and in what order.
+   *
+   * @example
+   * ```typescript
+   * import { securityPreset, parserPreset, allPresets } from 'magik/presets';
+   *
+   * // Apply specific presets
+   * presets: [securityPreset, parserPreset],
+   *
+   * // Or use all built-in presets
+   * presets: allPresets,
+   *
+   * // Or no presets (you configure everything manually)
+   * presets: [],
+   * ```
+   */
+  presets?: MiddlewarePreset[];
 
   routeDiscoveryOptions?: RouteDiscoveryConfig;
 

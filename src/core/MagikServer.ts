@@ -196,17 +196,25 @@ export class MagikServer<
       this.DEBUG && consola.success('[MagikServer] Event system ready');
 
       // Connect to database (if configured)
-      await this.connectDatabase(); // --- IGNORE ---
-      // DONT THINK THIS IS THE CORRECT PLACE?
+      await this.connectDatabase();
 
-      // Apply middleware
+      // Load middleware presets from config (if provided)
+      // Presets are no longer auto-loaded - they must be explicitly configured
+      if (this.config.presets?.length) {
+        for (const preset of this.config.presets) {
+          this.middlewareEngine.registerPreset(preset);
+        }
+        this.DEBUG && consola.success(`[MagikServer] Loaded ${this.config.presets.length} middleware preset(s)`);
+      }
+
+      // Apply middleware by category (from loaded presets)
       this.setupMiddleware('security');
       this.DEBUG && consola.success('[MagikServer] Security middleware applied');
 
       this.setupMiddleware('parser');
       this.DEBUG && consola.success('[MagikServer] Parser middleware applied');
 
-      // Install initial plugins from config (This also is not when we traditionally load the plugins?)
+      // Install initial plugins from config
       if (this.config.plugins?.length) {
         for (const plugin of this.config.plugins) {
           await this.use(plugin);

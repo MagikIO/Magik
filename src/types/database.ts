@@ -1,3 +1,9 @@
+import type {
+  IRepository,
+  IRepositoryRegistry,
+  RepositoryConfig,
+} from './repository.js';
+
 /**
  * Connection lifecycle states that MagikIO can react to.
  * Database adapters can emit these to trigger server-level behavior.
@@ -122,6 +128,57 @@ export interface IMagikDatabaseAdapter<
    * Get the current state of a connection.
    */
   getConnectionState(serviceName: TServices): ConnectionState | undefined;
+
+  // ============================================================
+  // Repository Support (Optional)
+  // Adapters can implement these for database-agnostic data access
+  // ============================================================
+
+  /**
+   * Registry of all repositories managed by this adapter.
+   * Optional - only required if using the repository pattern.
+   */
+  readonly repositories?: IRepositoryRegistry;
+
+  /**
+   * Register a repository for a collection/table.
+   * Creates a database-specific repository wrapping the schema.
+   *
+   * @param serviceName - The service/connection to register against
+   * @param name - The collection/table name
+   * @param schema - Database-specific schema definition
+   * @returns The created repository
+   *
+   * @example
+   * ```typescript
+   * // Mongoose
+   * const userRepo = adapter.registerRepository('main', 'users', UserSchema);
+   *
+   * // PostgreSQL/Prisma
+   * const userRepo = adapter.registerRepository('primary', 'users', prisma.user);
+   * ```
+   */
+  registerRepository?<T, TId = string>(
+    serviceName: TServices,
+    name: string,
+    schema: unknown
+  ): IRepository<T, TId>;
+
+  /**
+   * Get a repository by name.
+   *
+   * @param name - The collection/table name
+   * @returns The repository or undefined if not registered
+   */
+  getRepository?<T, TId = string>(name: string): IRepository<T, TId> | undefined;
+
+  /**
+   * Register multiple repositories at once.
+   *
+   * @param serviceName - The service/connection to register against
+   * @param configs - Array of repository configurations
+   */
+  registerRepositories?(serviceName: TServices, configs: RepositoryConfig[]): void;
 }
 
 /**
@@ -159,6 +216,20 @@ export interface MagikDatabaseConfig<
    * @default true
    */
   autoDisconnect?: boolean;
+
+  /**
+   * Repository configurations to register after connection.
+   * Each config defines a collection/table and its schema.
+   *
+   * @example
+   * ```typescript
+   * repositories: [
+   *   { name: 'users', schema: UserSchema },
+   *   { name: 'orders', schema: OrderSchema },
+   * ]
+   * ```
+   */
+  repositories?: RepositoryConfig[];
 }
 
 /**

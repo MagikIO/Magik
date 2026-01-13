@@ -43,12 +43,14 @@ export type AuthTypes =
 // Auth Middleware Map
 // ============================================================================
 
+/**
+ * A flexible map of auth type names to their middleware handlers.
+ * Uses string index signature to allow any auth type name.
+ *
+ * @deprecated Import AuthMiddlewareMap from './auth' instead for type-safe auth.
+ */
 export interface AuthMiddlewareMap {
-  ensureAuthenticated: MagikMiddleware;
-  ensureAccessGranted: (roles: string[]) => MagikMiddleware;
-  ensureAdmin: MagikMiddleware;
-  ensureIT: MagikMiddleware;
-  ensureIsEmployee: MagikMiddleware;
+  [authType: string]: MagikMiddleware;
 }
 
 // ============================================================================

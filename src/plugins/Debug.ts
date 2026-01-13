@@ -42,7 +42,7 @@ export class DebugPlugin implements MagikPlugin {
         );
       });
 
-      next();
+      next?.();
     });
 
     consola.success('[DebugPlugin] Request logging enabled');
@@ -80,9 +80,9 @@ export class DebugPlugin implements MagikPlugin {
       //   consola.info(
       //     `[DebugPlugin] Server is listening on ${JSON.stringify(address)}`,
       //   ),
-      serverPortError: (port) =>
+      serverPortError: (port: number) =>
         consola.error(`[DebugPlugin] Port ${port} error`),
-      serverPortInUse: (port) =>
+      serverPortInUse: (port: number) =>
         consola.error(`[DebugPlugin] Port ${port} in use`),
     };
   }

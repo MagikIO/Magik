@@ -10,7 +10,6 @@ import type {
 } from '../types/middleware';
 import type { AuthConfig, AuthTypes } from '../types/auth';
 import { isRoleArray } from '../types/auth';
-import { allPresets } from '../presets';
 
 /**
  * MiddlewareEngine manages middleware registration, ordering, and application.
@@ -52,12 +51,6 @@ export class MiddlewareEngine implements IMiddlewareEngine {
     private debug = false,
     authConfig?: AuthConfig,
   ) {
-    // Load built-in presets
-    allPresets.forEach((preset) => {
-      this.registerBulk(preset.middlewares);
-      this.debug && consola.info(`[MiddlewareEngine] Loaded preset: ${preset.name}`);
-    });
-
     // Configure auth from config
     if (authConfig) {
       this.configureAuth(authConfig);
