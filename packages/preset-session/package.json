@@ -1,0 +1,47 @@
+{
+  "name": "@magik_io/preset-session",
+  "version": "1.0.0",
+  "description": "Session middleware preset for Magik (express-session, store-agnostic)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "magik",
+    "session",
+    "express-session",
+    "middleware"
+  ],
+  "author": "Abourass",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MagikIO/Magik.git",
+    "directory": "packages/preset-session"
+  },
+  "peerDependencies": {
+    "@magik_io/magik": "workspace:*",
+    "express": "^4.21.2"
+  },
+  "dependencies": {
+    "express-session": "^1.18.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/express-session": "^1.18.0",
+    "typescript": "^5.3.3"
+  }
+}

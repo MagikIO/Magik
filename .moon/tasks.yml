@@ -1,0 +1,80 @@
+# Shared/global tasks that can be inherited by all projects
+# https://moonrepo.dev/docs/config/tasks
+
+$schema: 'https://moonrepo.dev/schemas/tasks.json'
+
+# File groups for input/output management
+fileGroups:
+  sources:
+    - 'src/**/*'
+  configs:
+    - '*.config.*'
+    - 'tsconfig.json'
+    - 'package.json'
+  tests:
+    - 'src/**/*.test.ts'
+    - 'src/**/*.spec.ts'
+
+# Implicit inputs for all tasks
+implicitInputs:
+  - 'package.json'
+
+# Task definitions
+tasks:
+  # Development tasks
+  dev:
+    command: 'tsc --watch'
+    local: true
+    options:
+      persistent: true
+
+  # Build tasks
+  build:
+    command: 'tsc'
+    inputs:
+      - '@group(sources)'
+      - '@group(configs)'
+    outputs:
+      - 'dist'
+
+  # Clean task
+  clean:
+    command: 'rm -rf dist'
+    local: true
+
+  # Type checking
+  typecheck:
+    command: 'tsc --noEmit'
+    inputs:
+      - '@group(sources)'
+      - '@group(configs)'
+
+  # Linting
+  lint:
+    command: 'biome check .'
+    inputs:
+      - '@group(sources)'
+      - 'biome.json'
+
+  # Formatting
+  format:
+    command: 'biome format --write .'
+    inputs:
+      - '@group(sources)'
+      - 'biome.json'
+
+  # Testing
+  test:
+    command: 'vitest run'
+    inputs:
+      - '@group(sources)'
+      - '@group(tests)'
+      - 'vitest.config.ts'
+    options:
+      runInCI: true
+
+  test-watch:
+    command: 'vitest'
+    local: true
+    options:
+      persistent: true

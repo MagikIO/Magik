@@ -1,0 +1,50 @@
+{
+  "name": "@magik_io/preset-parser",
+  "version": "1.0.0",
+  "description": "Parser middleware preset for Magik (JSON, URL-encoded parsers)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "magik",
+    "parser",
+    "json",
+    "urlencoded",
+    "middleware"
+  ],
+  "author": "Abourass",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MagikIO/Magik.git",
+    "directory": "packages/preset-parser"
+  },
+  "peerDependencies": {
+    "@magik_io/magik": "workspace:*",
+    "express": "^4.21.2"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "method-override": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.7",
+    "@types/express": "^5.0.0",
+    "@types/method-override": "^0.0.35",
+    "typescript": "^5.3.3"
+  }
+}

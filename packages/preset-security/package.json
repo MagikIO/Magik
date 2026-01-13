@@ -1,0 +1,47 @@
+{
+  "name": "@magik_io/preset-security",
+  "version": "1.0.0",
+  "description": "Security middleware preset for Magik (Helmet, CORS)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "magik",
+    "security",
+    "helmet",
+    "cors",
+    "middleware"
+  ],
+  "author": "Abourass",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MagikIO/Magik.git",
+    "directory": "packages/preset-security"
+  },
+  "peerDependencies": {
+    "@magik_io/magik": "workspace:*"
+  },
+  "dependencies": {
+    "helmet": "^8.1.0",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "typescript": "^5.3.3"
+  }
+}

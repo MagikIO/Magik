@@ -1,0 +1,47 @@
+{
+  "name": "@magik_io/session-redis",
+  "version": "1.0.0",
+  "description": "Redis session store for Magik",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "magik",
+    "session",
+    "redis",
+    "store"
+  ],
+  "author": "Abourass",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MagikIO/Magik.git",
+    "directory": "packages/session-redis"
+  },
+  "peerDependencies": {
+    "@magik_io/preset-session": "workspace:*",
+    "express-session": "^1.18.1"
+  },
+  "dependencies": {
+    "connect-redis": "^7.1.1",
+    "redis": "^4.7.0"
+  },
+  "devDependencies": {
+    "@types/express-session": "^1.18.0",
+    "typescript": "^5.3.3"
+  }
+}
