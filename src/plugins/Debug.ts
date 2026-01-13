@@ -1,6 +1,7 @@
 import consola from 'consola';
 import type { MagikPlugin } from '../types/plugins';
 import type { IMagikServer } from '../types/server';
+import type { ServerEventMap } from '../types/events';
 
 /**
  * DebugPlugin enables debug logging and request inspection
@@ -35,8 +36,6 @@ export class DebugPlugin implements MagikPlugin {
       res.on('finish', () => {
         const duration = Date.now() - start;
         const status = res.statusCode;
-        const statusColor = status >= 400 ? 'red' : status >= 300 ? 'yellow' : 'green';
-
         consola.info(
           `[Debug] ${req.method} ${req.path} -> ${status} (${duration}ms)`,
         );
@@ -71,15 +70,15 @@ export class DebugPlugin implements MagikPlugin {
     });
   }
 
-    registerEvents() {
+  registerEvents(): Partial<ServerEventMap> {
     return {
       beforeStart: () => consola.info('[DebugPlugin] Server is about to start'),
       afterStart: () => consola.info('[DebugPlugin] Server has started'),
       beforeStop: () => consola.info('[DebugPlugin] Server is about to stop'),
-      // serverListening: (address) =>
-      //   consola.info(
-      //     `[DebugPlugin] Server is listening on ${JSON.stringify(address)}`,
-      //   ),
+      serverListening: (address: string | { port: number; family: string; address: string }) =>
+        consola.info(
+          `[DebugPlugin] Server is listening on ${JSON.stringify(address)}`,
+        ),
       serverPortError: (port: number) =>
         consola.error(`[DebugPlugin] Port ${port} error`),
       serverPortInUse: (port: number) =>

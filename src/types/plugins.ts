@@ -1,4 +1,4 @@
-import type { ServerEvent } from './events';
+import type { ServerEvent, ServerEventMap } from './events';
 import type { MiddlewareConfig } from './middleware';
 import type { PathSegment, RouteDefinition } from './routes';
 import type { IMagikServer } from './server';
@@ -68,6 +68,8 @@ export interface MagikPlugin {
   /** Register route definitions grouped by prefix */
   registerRoutes?: () => PluginRouteMap;
 
-  /** Register event handlers */
-  registerEvents?: () => Record<string, (...args: unknown[]) => void>;
+  /** Register event handlers with proper type signatures */
+  registerEvents?: () => {
+    [K in keyof ServerEventMap]?: ServerEventMap[K];
+  };
 }

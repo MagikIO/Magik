@@ -17,6 +17,25 @@ export type ServerEvent =
   | 'routesLoaded';
 
 // ============================================================================
+// Event Signature Map - Define exact types for each event
+// ============================================================================
+
+export interface ServerEventMap {
+  beforeStart: () => void;
+  afterStart: () => void;
+  beforeStop: () => void;
+  afterStop: () => void;
+  error: (error: Error) => void;
+  request: (req: unknown) => void;
+  response: (res: unknown) => void;
+  serverError: (error: Error) => void;
+  serverListening: (address: string | { port: number; family: string; address: string }) => void;
+  serverPortError: (port: number) => void;
+  serverPortInUse: (port: number) => void;
+  routesLoaded: () => void;
+}
+
+// ============================================================================
 // Server Status
 // ============================================================================
 

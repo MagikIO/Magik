@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import consola from 'consola';
-import type { ServerEvent } from '../types/events';
+import type { ServerEvent, ServerEventMap } from '../types/events';
 import type { IEventEngine } from '../types/engines';
 
 /**
@@ -29,7 +29,7 @@ import type { IEventEngine } from '../types/engines';
 export class EventEngine implements IEventEngine {
   private emitter: EventEmitter;
   private debug: boolean;
-  private handlers = new Map<ServerEvent, Set<(...args: unknown[]) => void>>();
+  private handlers = new Map<ServerEvent, Set<(...args: any[]) => void>>();
 
   constructor(debug = false) {
     this.emitter = new EventEmitter();
@@ -44,13 +44,15 @@ export class EventEngine implements IEventEngine {
   }
 
   /**
-   * Register an event handler
+   * Register an event handler with proper type inference
    *
    * @param event - The event name
    * @param handler - The handler function
    * @returns this for chaining
    */
-  on(event: ServerEvent, handler: (...args: unknown[]) => void): this {
+  on<K extends keyof ServerEventMap>(event: K, handler: ServerEventMap[K]): this;
+  on(event: ServerEvent, handler: (...args: any[]) => void): this;
+  on(event: ServerEvent, handler: (...args: any[]) => void): this {
     const handlers = this.handlers.get(event) || new Set();
     handlers.add(handler);
     this.handlers.set(event, handlers);
@@ -66,7 +68,9 @@ export class EventEngine implements IEventEngine {
    * @param handler - The handler function to remove
    * @returns this for chaining
    */
-  off(event: ServerEvent, handler: (...args: unknown[]) => void): this {
+  off<K extends keyof ServerEventMap>(event: K, handler: ServerEventMap[K]): this;
+  off(event: ServerEvent, handler: (...args: any[]) => void): this;
+  off(event: ServerEvent, handler: (...args: any[]) => void): this {
     const handlers = this.handlers.get(event);
     if (handlers) {
       handlers.delete(handler);
