@@ -93,14 +93,15 @@ export class RouteEngine implements IRouteEngine {
     ) => Promise<unknown> | void,
     useNext = false,
   ): RequestHandler {
-    return async (req, res, next) => {
+    return async (req, res, next): Promise<void> => {
       try {
         if (typeof handler !== 'function') {
           consola.error('[RouteEngine] Handler is not a function:', {
             handler,
             route: req.originalUrl,
           });
-          return res.status(500).send("We're sorry, but something went wrong");
+          res.status(500).send("We're sorry, but something went wrong");
+          return;
         }
 
         if (useNext) {
@@ -188,31 +189,31 @@ export class RouteEngine implements IRouteEngine {
 
           if (!result.success) {
             if (this.debug) {
-                consola.error('\nValidation Errors:');
-                result.error.issues.forEach((issue) => {
-                  const inputData = hasReqKeys
-                    ? { body: req.body, params: req.params, query: req.query }
-                    : req.body;
+              consola.error('\nValidation Errors:');
+              result.error.issues.forEach((issue) => {
+                const inputData = hasReqKeys
+                  ? { body: req.body, params: req.params, query: req.query }
+                  : req.body;
 
-                  const currentValue = issue.path.reduce(
-                    (obj, key) => obj?.[key],
-                    inputData,
-                  );
+                const currentValue = issue.path.reduce(
+                  (obj, key) => obj?.[key],
+                  inputData,
+                );
 
-                  consola.error({
-                    field: issue.path.join('.') || 'root',
-                    error: issue.message,
-                    type: issue.code,
-                    received:
-                      currentValue === undefined ? 'undefined' : currentValue,
-                    expected: this.getExpectedValue(issue),
-                  });
+                consola.error({
+                  field: issue.path.join('.') || 'root',
+                  error: issue.message,
+                  type: issue.code,
+                  received:
+                    currentValue === undefined ? 'undefined' : currentValue,
+                  expected: this.getExpectedValue(issue),
                 });
-                consola.error(''); // Empty line for readability
+              });
+              consola.error(''); // Empty line for readability
             }
 
 
-            return res.status(400).json({
+            res.status(400).json({
               error: 'Validation failed',
               details: result.error.issues.map((issue) => ({
                 field: issue.path.join('.') || 'root',
@@ -220,6 +221,8 @@ export class RouteEngine implements IRouteEngine {
                 code: issue.code,
               })),
             });
+
+            return
           }
 
           req.body = hasReqKeys 
