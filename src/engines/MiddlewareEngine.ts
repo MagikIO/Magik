@@ -3,12 +3,11 @@ import type { Express } from 'express';
 import type { RequestHandler } from 'express-serve-static-core';
 import type { IMiddlewareEngine } from '../types/engines';
 import type {
-  AuthMiddlewareMap,
   MiddlewareCategory,
   MiddlewareConfig,
   MiddlewarePreset,
 } from '../types/middleware';
-import type { AuthConfig, AuthTypes } from '../types/auth';
+import type { AuthConfig, AuthTypes, AuthMiddlewareMap } from '../types/auth';
 import { isRoleArray } from '../types/auth';
 
 /**

@@ -1,51 +1,340 @@
-# 🪄 Magik
+# Magik
 
-A powerful, plugin-based Express server framework with decorator-based routing, middleware presets, and lifecycle events.
+A powerful, plugin-based Express server framework with decorator-based routing, database adapters, and opt-in middleware presets.
 
-[![npm version](https://img.shields.io/npm/v/@anandamide/magik.svg)](https://www.npmjs.com/package/@anandamide/magik)
+[![npm version](https://img.shields.io/npm/v/@magikio/magik.svg)](https://www.npmjs.com/package/@magikio/magik)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 
 ## Features
 
-- **🔌 Plugin Architecture** - Extensible plugin system with lifecycle hooks
-- **🎯 Decorator-based Routing** - Define routes using `@Router`, `@Get`, `@Post`, etc.
-- **⚙️ Middleware Engine** - Category-based middleware with priority ordering and presets
-- **📡 Event System** - Lifecycle events for server operations
-- **✅ Zod Validation** - Type-safe request validation out of the box
-- **🔒 Built-in Auth** - Authentication middleware helpers
-- **🚀 Auto Route Discovery** - Automatically discovers and registers routes
+- **Database Agnostic** - Repository pattern with adapter support (Mongoose, PostgreSQL, etc.)
+- **Opt-in Middleware** - Presets are explicit, not auto-loaded
+- **Flexible Auth** - User adapter pattern for any user model
+- **Plugin Architecture** - Extensible plugin system with lifecycle hooks
+- **Decorator Routing** - Define routes using `@Router`, `@Get`, `@Post`, etc.
+- **Type-Safe** - Full TypeScript support with generics throughout
 
 ## Installation
 
 ```bash
-npm install @anandamide/magik
+npm install @magikio/magik
 # or
-yarn add @anandamide/magik
-# or
-pnpm add @anandamide/magik
+pnpm add @magikio/magik
 ```
 
 ## Quick Start
 
 ```typescript
-import { MagikServer } from '@anandamide/magik';
+import { MagikServer, allPresets } from '@magikio/magik';
 
 const server = await MagikServer.init({
   name: 'my-api',
   port: 3000,
+  presets: allPresets, // Opt-in to security + parser presets
 });
 
 console.log(`Server running on port ${server.port}`);
 ```
 
-## Decorator-Based Routing
-
-Define routes using familiar decorators:
+## Configuration
 
 ```typescript
-import { Router, Get, Post, Delete } from '@anandamide/magik/decorators';
-import { createRoute } from '@anandamide/magik/factories';
+import { MagikServer, allPresets, securityPreset, parserPreset } from '@magikio/magik';
+import { MongooseAdapter } from '@magikio/mongoose-adapter';
+
+const server = await MagikServer.init({
+  name: 'my-api',
+  port: 3000,
+  debug: true,
+  mode: 'development',
+
+  // Middleware presets are opt-in (not auto-loaded)
+  presets: [securityPreset, parserPreset],
+  // Or use allPresets for all built-in presets
+
+  // Optional: Database configuration
+  database: {
+    adapter: new MongooseAdapter(),
+    primaryService: 'main',
+    connectionOptions: {
+      uri: process.env.MONGO_URI!,
+    },
+  },
+
+  // Optional: Authentication configuration
+  auth: {
+    handlers: {
+      ensureAuthenticated: (req, res, next) => {
+        if (req.user) return next();
+        res.status(401).json({ error: 'Unauthorized' });
+      },
+      ensureAdmin: (req, res, next) => {
+        if (req.user?.role === 'admin') return next();
+        res.status(403).json({ error: 'Forbidden' });
+      },
+    },
+    roleHandler: (roles) => (req, res, next) => {
+      if (roles.includes(req.user?.role)) return next();
+      res.status(403).json({ error: 'Forbidden' });
+    },
+  },
+
+  // Optional: Plugins
+  plugins: [
+    new ErrorHandlingPlugin(),
+    new GracefulShutdownPlugin(),
+  ],
+});
+```
+
+## Database Adapters
+
+Magik uses the adapter pattern for database-agnostic data access. This allows you to switch databases (e.g., from MongoDB to PostgreSQL) without changing your route handlers.
+
+### Using the Mongoose Adapter
+
+```typescript
+import { MongooseAdapter } from '@magikio/mongoose-adapter';
+import { Schema } from 'mongoose';
+
+// Define your schema
+const UserSchema = new Schema({
+  email: { type: String, required: true },
+  name: String,
+  role: { type: String, default: 'user' },
+});
+
+// Create adapter and connect
+const adapter = new MongooseAdapter<'main'>();
+
+const server = await MagikServer.init({
+  name: 'my-api',
+  database: {
+    adapter,
+    primaryService: 'main',
+    connectionOptions: { uri: process.env.MONGO_URI! },
+  },
+  presets: allPresets,
+});
+
+// Register repositories after connection
+const userRepo = adapter.registerRepository<User>('main', 'users', UserSchema);
+
+// Use in routes
+const user = await userRepo.findById('123');
+const users = await userRepo.findMany({ role: 'admin' }, { limit: 10 });
+await userRepo.create({ email: 'test@example.com', name: 'Test User' });
+```
+
+### Repository Interface
+
+All repositories implement a common interface for portability:
+
+```typescript
+interface IRepository<T, TId = string> {
+  findById(id: TId): Promise<T | null>;
+  findOne(query: Partial<T>): Promise<T | null>;
+  findMany(query: Partial<T>, options?: QueryOptions): Promise<T[]>;
+  create(data: Omit<T, 'id'>): Promise<T>;
+  createMany(data: Omit<T, 'id'>[]): Promise<T[]>;
+  update(id: TId, data: Partial<T>): Promise<T | null>;
+  updateMany(query: Partial<T>, data: Partial<T>): Promise<number>;
+  delete(id: TId): Promise<boolean>;
+  deleteMany(query: Partial<T>): Promise<number>;
+  count(query?: Partial<T>): Promise<number>;
+  exists(query: Partial<T>): Promise<boolean>;
+}
+```
+
+## Authentication
+
+### Basic Auth Configuration
+
+```typescript
+const server = await MagikServer.init({
+  name: 'my-api',
+  auth: {
+    handlers: {
+      ensureAuthenticated: (req, res, next) => {
+        if (req.user) return next();
+        res.status(401).json({ error: 'Unauthorized' });
+      },
+      ensureAdmin: (req, res, next) => {
+        if (req.user?.isAdmin) return next();
+        res.status(403).json({ error: 'Forbidden' });
+      },
+    },
+    // For role-based auth using arrays
+    roleHandler: (roles) => (req, res, next) => {
+      const userRoles = req.user?.roles ?? [];
+      if (roles.some(r => userRoles.includes(r))) return next();
+      res.status(403).json({ error: 'Forbidden' });
+    },
+  },
+  presets: allPresets,
+});
+```
+
+### Using User Adapters
+
+For more complex auth scenarios, use the user adapter pattern:
+
+```typescript
+import {
+  MagikServer,
+  IUserAdapter,
+  createRoleMiddleware,
+  createRoleHandlerFactory,
+} from '@magikio/magik';
+
+// Define your user type
+interface MyUser {
+  id: string;
+  groups: string;
+  accessLevel: 'full' | 'limited' | null;
+  twoFactor?: { enabled: boolean; authenticated: boolean };
+}
+
+// Implement the adapter
+class MyUserAdapter implements IUserAdapter<MyUser> {
+  getRoles(user: MyUser) {
+    return [user.groups];
+  }
+
+  getPermissions(user: MyUser) {
+    return user.accessLevel ? [user.accessLevel] : [];
+  }
+
+  hasRole(user: MyUser, role: string) {
+    return user.groups === role;
+  }
+
+  hasPermission(user: MyUser, permission: string) {
+    return user.accessLevel === permission;
+  }
+
+  // Optional: 2FA support
+  requiresTwoFactor(user: MyUser) {
+    return user.twoFactor?.enabled === true;
+  }
+
+  hasTwoFactorPassed(user: MyUser) {
+    return user.twoFactor?.authenticated === true;
+  }
+}
+
+const userAdapter = new MyUserAdapter();
+
+const server = await MagikServer.init({
+  name: 'my-api',
+  auth: {
+    userAdapter,
+    handlers: {
+      ensureAuthenticated: createAuthenticatedMiddleware(userAdapter),
+      ensureAdmin: createRoleMiddleware(userAdapter, ['Admin', 'IT']),
+    },
+    roleHandler: createRoleHandlerFactory(userAdapter),
+  },
+  presets: allPresets,
+});
+```
+
+### Auth Helper Functions
+
+```typescript
+import {
+  createRoleMiddleware,        // Requires ANY of the specified roles
+  createAllRolesMiddleware,    // Requires ALL of the specified roles
+  createPermissionMiddleware,  // Requires ANY of the specified permissions
+  createAllPermissionsMiddleware,
+  createAuthenticatedMiddleware,
+  createTwoFactorMiddleware,
+  createRoleHandlerFactory,    // For AuthConfig.roleHandler
+} from '@magikio/magik';
+
+// Example usage
+const requireAdmin = createRoleMiddleware(userAdapter, ['Admin']);
+const requireManager = createAllRolesMiddleware(userAdapter, ['Manager', 'Verified']);
+const require2FA = createTwoFactorMiddleware(userAdapter);
+```
+
+## Middleware Presets
+
+Presets are **opt-in** and must be explicitly included in your configuration:
+
+```typescript
+import {
+  MagikServer,
+  allPresets,       // All built-in presets
+  securityPreset,   // Helmet, CORS
+  parserPreset,     // JSON, URL-encoded parsers
+} from '@magikio/magik';
+
+// Use all presets
+const server = await MagikServer.init({
+  name: 'my-api',
+  presets: allPresets,
+});
+
+// Or pick specific ones
+const server = await MagikServer.init({
+  name: 'my-api',
+  presets: [securityPreset], // Only security, no parsers
+});
+
+// Or no presets (configure everything manually)
+const server = await MagikServer.init({
+  name: 'my-api',
+  presets: [],
+});
+```
+
+### Available Presets
+
+| Preset | Middleware |
+|--------|------------|
+| `securityPreset` | Helmet (security headers), CORS |
+| `parserPreset` | JSON parser, URL-encoded parser |
+
+### Additional Preset Packages
+
+Install additional presets as needed:
+
+```bash
+# Session management
+pnpm add @magikio/preset-session
+
+# Redis session store
+pnpm add @magikio/session-redis
+
+# S3 file uploads
+pnpm add @magikio/upload-s3
+```
+
+```typescript
+import { createSessionPreset } from '@magikio/preset-session';
+import { RedisStore } from 'connect-redis';
+
+const server = await MagikServer.init({
+  name: 'my-api',
+  presets: [
+    securityPreset,
+    parserPreset,
+    createSessionPreset({
+      store: new RedisStore({ client: redisClient }),
+      secret: process.env.SESSION_SECRET!,
+      cookieName: 'my-app.sid',
+    }),
+  ],
+});
+```
+
+## Decorator-Based Routing
+
+```typescript
+import { Router, Get, Post, Delete } from '@magikio/magik/decorators';
+import { createRoute } from '@magikio/magik/factories';
 import { z } from 'zod';
 
 @Router('/users')
@@ -54,7 +343,7 @@ export default class UserRouter {
   public listUsers() {
     return createRoute({
       handler: async (req, res) => {
-        const users = await UserService.findAll();
+        const users = await userRepo.findMany({});
         res.json(users);
       },
     });
@@ -65,7 +354,8 @@ export default class UserRouter {
     return createRoute({
       auth: 'ensureAuthenticated',
       handler: async (req, res) => {
-        const user = await UserService.findById(req.params.id);
+        const user = await userRepo.findById(req.params.id);
+        if (!user) return res.status(404).json({ error: 'Not found' });
         res.json(user);
       },
     });
@@ -81,8 +371,7 @@ export default class UserRouter {
         role: z.enum(['user', 'admin']).optional(),
       }),
       handler: async (req, res) => {
-        // req.body is fully typed from the schema
-        const user = await UserService.create(req.body);
+        const user = await userRepo.create(req.body);
         res.status(201).json(user);
       },
     });
@@ -91,9 +380,9 @@ export default class UserRouter {
   @Delete('/:id')
   public deleteUser() {
     return createRoute({
-      auth: 'ensureAdmin',
+      auth: ['Admin', 'IT'], // Role array - requires any of these
       handler: async (req, res) => {
-        await UserService.delete(req.params.id);
+        await userRepo.delete(req.params.id);
         res.status(204).send();
       },
     });
@@ -103,508 +392,169 @@ export default class UserRouter {
 
 ## Plugin System
 
-Extend Magik with plugins:
-
 ```typescript
-import { MagikPlugin, IMagikServer } from '@anandamide/magik/types';
+import { MagikPlugin, IMagikServer } from '@magikio/magik/types';
 
 export class MyPlugin implements MagikPlugin {
   config = {
     name: 'my-plugin',
     version: '1.0.0',
-    pluginDependencies: [], // Optional: other plugins this depends on
-    requiredMiddleware: [], // Optional: middleware that must be registered
   };
 
-  // Called when plugin is installed
   async onInstall(server: IMagikServer) {
     console.log('Plugin installed!');
   }
 
-  // Called before server starts
   async beforeStart(server: IMagikServer) {
-    console.log('Server about to start...');
+    // Before server starts listening
   }
 
-  // Called after server starts
   async afterStart(server: IMagikServer) {
-    console.log('Server started!');
+    // After server is listening
   }
 
-  // Called before server shuts down
   async beforeShutdown(server: IMagikServer) {
-    console.log('Server shutting down...');
+    // Before graceful shutdown
   }
 
-  // Register custom middleware
   registerMiddleware() {
-    return [
-      {
-        name: 'my-middleware',
-        category: 'custom',
-        priority: 50,
-        handler: (req, res, next) => {
-          req.customData = 'hello';
-          next();
-        },
+    return [{
+      name: 'my-middleware',
+      category: 'custom',
+      priority: 50,
+      handler: (req, res, next) => {
+        req.customData = 'hello';
+        next();
       },
-    ];
+    }];
   }
 
-  // Register plugin routes
   registerRoutes() {
     return {
-      '/my-plugin': [
-        {
-          path: '/status',
-          method: 'get',
-          handler: (req, res) => res.json({ status: 'ok' }),
-        },
-      ],
+      '/my-plugin': [{
+        path: '/status',
+        method: 'get',
+        handler: (req, res) => res.json({ status: 'ok' }),
+      }],
     };
   }
-
-  // React to server events
-  onEvent = {
-    routesLoaded: (server: IMagikServer) => {
-      console.log('All routes loaded!');
-    },
-  };
 }
 
 // Use the plugin
-const server = await MagikServer.init({ name: 'my-api' });
 await server.use(new MyPlugin());
-```
-
-## Middleware Engine
-
-Magik organizes middleware into categories with priority ordering:
-
-### Categories
-
-| Category | Priority Range | Purpose |
-|----------|---------------|---------|
-| `security` | 90-100 | Helmet, CORS, rate limiting |
-| `session` | 70-89 | Session management, cookies |
-| `parser` | 80-89 | Body parsing, JSON, URL-encoded |
-| `compression` | 60-69 | Response compression |
-| `logging` | 50-59 | Request logging, Morgan |
-| `static` | 40-49 | Static file serving |
-| `custom` | 0-39 | Custom application middleware |
-
-### Built-in Presets
-
-```typescript
-// Magik comes with these presets pre-configured:
-
-// Security Preset
-// - Helmet (security headers)
-// - CORS
-
-// Parser Preset
-// - JSON parser (20mb limit)
-// - URL-encoded parser
-// - Cookie parser
-// - Method override
-
-// Session Preset (when using PassportAuthenticationPlugin)
-// - Express session
-// - Passport initialization
-```
-
-### Custom Middleware
-
-```typescript
-server.middlewareEngine.register({
-  name: 'request-timer',
-  category: 'logging',
-  priority: 55,
-  handler: (req, res, next) => {
-    const start = Date.now();
-    res.on('finish', () => {
-      console.log(`${req.method} ${req.path} - ${Date.now() - start}ms`);
-    });
-    next();
-  },
-});
-```
-
-## Authentication
-
-Built-in authentication middleware:
-
-```typescript
-@Router('/admin')
-export default class AdminRouter {
-  @Get('/dashboard')
-  public dashboard() {
-    return createRoute({
-      // Require any authenticated user
-      auth: 'ensureAuthenticated',
-      handler: (req, res) => {
-        res.render('dashboard', { user: req.user });
-      },
-    });
-  }
-
-  @Post('/settings')
-  public updateSettings() {
-    return createRoute({
-      // Require admin role
-      auth: 'ensureAdmin',
-      handler: (req, res) => {
-        // Only admins can access this
-      },
-    });
-  }
-
-  @Get('/system')
-  public systemStatus() {
-    return createRoute({
-      // Require IT role
-      auth: 'ensureIT',
-      handler: (req, res) => {
-        // Only IT staff can access this
-      },
-    });
-  }
-
-  @Post('/reports')
-  public generateReport() {
-    return createRoute({
-      // Require specific roles (array)
-      auth: ['manager', 'analyst'],
-      handler: (req, res) => {
-        // Only managers or analysts can access this
-      },
-    });
-  }
-}
-```
-
-### Available Auth Types
-
-| Type | Description |
-|------|-------------|
-| `ensureAuthenticated` | Any logged-in user |
-| `ensureAdmin` | Admin role required |
-| `ensureIT` | IT role required |
-| `ensureIsEmployee` | Employee role required |
-| `ensureAccessGranted` | Custom access check |
-| `['role1', 'role2']` | Any of the specified roles |
-
-## Request Validation with Zod
-
-Type-safe validation with automatic TypeScript inference:
-
-```typescript
-import { z } from 'zod';
-
-@Router('/orders')
-export default class OrderRouter {
-  @Post('/')
-  public createOrder() {
-    return createRoute({
-      auth: 'ensureAuthenticated',
-      schema: z.object({
-        items: z.array(z.object({
-          productId: z.string(),
-          quantity: z.number().int().positive(),
-        })).min(1),
-        shippingAddress: z.object({
-          street: z.string(),
-          city: z.string(),
-          state: z.string(),
-          zip: z.string().regex(/^\d{5}(-\d{4})?$/),
-        }),
-        notes: z.string().optional(),
-      }),
-      handler: async (req, res) => {
-        // req.body is fully typed:
-        // {
-        //   items: Array<{ productId: string; quantity: number }>;
-        //   shippingAddress: { street: string; city: string; state: string; zip: string };
-        //   notes?: string;
-        // }
-        const order = await OrderService.create(req.body);
-        res.status(201).json(order);
-      },
-    });
-  }
-}
-```
-
-## Event System
-
-React to server lifecycle events:
-
-```typescript
-// In a plugin
-onEvent = {
-  beforeStart: async (server) => {
-    await initializeExternalConnections();
-  },
-  afterStart: async (server) => {
-    console.log(`Server listening on ${server.port}`);
-  },
-  beforeStop: async (server) => {
-    await closeExternalConnections();
-  },
-  afterStop: async (server) => {
-    console.log('Server stopped');
-  },
-  routesLoaded: (server) => {
-    const { total } = server.routerManager.getRouteCount();
-    console.log(`Loaded ${total} routes`);
-  },
-  error: (server, error) => {
-    console.error('Server error:', error);
-  },
-};
-
-// Or directly on the event engine
-server.eventEngine.on('routesLoaded', () => {
-  console.log('Routes are ready!');
-});
-```
-
-### Available Events
-
-| Event | Description |
-|-------|-------------|
-| `beforeStart` | Before server starts listening |
-| `afterStart` | After server is listening |
-| `beforeStop` | Before graceful shutdown |
-| `afterStop` | After server has stopped |
-| `routesLoaded` | All routes registered |
-| `error` | Unhandled error occurred |
-| `request` | Incoming request |
-| `response` | Outgoing response |
-| `serverError` | Server-level error |
-| `serverListening` | Server bound to port |
-| `serverPortError` | Port permission error |
-| `serverPortInUse` | Port already in use |
-
-## File Uploads
-
-Handle file uploads with Multer integration:
-
-```typescript
-@Router('/uploads')
-export default class UploadRouter {
-  @Post('/avatar')
-  public uploadAvatar() {
-    return createRoute({
-      auth: 'ensureAuthenticated',
-      upload: {
-        field: 'avatar',
-        multer: 'imageUpload', // Configured multer instance
-        multi: false,
-      },
-      handler: async (req, res) => {
-        const file = req.file;
-        const url = await StorageService.upload(file);
-        res.json({ url });
-      },
-    });
-  }
-
-  @Post('/documents')
-  public uploadDocuments() {
-    return createRoute({
-      auth: 'ensureAuthenticated',
-      upload: {
-        field: 'documents',
-        multer: 'documentUpload',
-        multi: true, // Multiple files
-      },
-      handler: async (req, res) => {
-        const files = req.files;
-        const urls = await Promise.all(
-          files.map(f => StorageService.upload(f))
-        );
-        res.json({ urls });
-      },
-    });
-  }
-}
 ```
 
 ## Built-in Plugins
 
-Magik includes several built-in plugins:
-
-### ErrorHandlingPlugin
-
-Global error handling with pretty error pages in development:
-
 ```typescript
-import { ErrorHandlingPlugin } from '@anandamide/magik/plugins';
+import {
+  ErrorHandlingPlugin,
+  GracefulShutdownPlugin,
+  RateLimiterPlugin,
+  DebugPlugin,
+} from '@magikio/magik/plugins';
 
+// Error handling with pretty pages in development
 await server.use(new ErrorHandlingPlugin());
-```
 
-### GracefulShutdownPlugin
-
-Handles SIGTERM/SIGINT for graceful shutdown:
-
-```typescript
-import { GracefulShutdownPlugin } from '@anandamide/magik/plugins';
-
+// Graceful SIGTERM/SIGINT handling
 await server.use(new GracefulShutdownPlugin());
-```
 
-### RateLimiterPlugin
-
-Rate limiting for API endpoints:
-
-```typescript
-import { RateLimiterPlugin } from '@anandamide/magik/plugins';
-
+// Rate limiting
 await server.use(new RateLimiterPlugin({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // 100 requests per window
+  max: 100,
 }));
-```
 
-### DebugPlugin
-
-Debug logging and route inspection:
-
-```typescript
-import { DebugPlugin } from '@anandamide/magik/plugins';
-
+// Debug logging
 await server.use(new DebugPlugin());
 ```
 
-## Configuration
+## Event System
 
 ```typescript
-interface MagikServerConfig {
-  name: string;           // Server name (required)
-  port?: number;          // Port (default: process.env.PORT || 5000)
-  debug?: boolean;        // Enable debug logging
-  mode?: 'development' | 'production';
+// In a plugin
+registerEvents() {
+  return {
+    beforeStart: async (server) => {
+      await initializeConnections();
+    },
+    afterStart: async (server) => {
+      console.log(`Listening on ${server.port}`);
+    },
+    routesLoaded: (server) => {
+      const { total } = server.routerManager.getRouteCount();
+      console.log(`Loaded ${total} routes`);
+    },
+  };
 }
 
-const server = await MagikServer.init({
-  name: 'my-api',
-  port: 3000,
-  debug: true,
-  mode: 'development',
+// Or directly
+server.eventEngine.on('routesLoaded', () => {
+  console.log('Routes ready!');
 });
 ```
 
-## API Reference
-
-### MagikServer
-
-```typescript
-class MagikServer {
-  // Static initializer
-  static async init(config: MagikServerConfig): Promise<MagikServer>;
-
-  // Properties
-  name: string;
-  app: Express;
-  server: http.Server;
-  port: number;
-  status: 'ONLINE' | 'OFFLINE' | 'SHUTTING DOWN';
-  DEBUG: boolean;
-  DevMode: boolean;
-
-  // Engines
-  routerManager: RouterManager;
-  middlewareEngine: MiddlewareEngine;
-  eventEngine: EventEngine;
-
-  // Methods
-  use(plugin: MagikPlugin): Promise<this>;
-  listen(): Promise<void>;
-  close(): Promise<void>;
-}
-```
-
-### RouterManager
-
-```typescript
-class RouterManager {
-  register(prefix: PathSegment): RouteEngine;
-  getRoute(prefix: PathSegment): RouteEngine | undefined;
-  getRouteCount(): { total: number; byPrefix: Record<string, number> };
-  getRouteCountByMethod(): Record<'get' | 'post' | 'put' | 'delete', number>;
-  installRoutes(): void;
-}
-```
-
-### MiddlewareEngine
-
-```typescript
-class MiddlewareEngine {
-  register(config: MiddlewareConfig): this;
-  registerBulk(configs: MiddlewareConfig[]): this;
-  hasMiddleware(name: string): boolean;
-  applyCategory(category: MiddlewareCategory): this;
-  getAuthMiddleware(auth: AuthTypes): RequestHandler;
-}
-```
-
-### EventEngine
-
-```typescript
-class EventEngine {
-  on(event: ServerEvent, handler: Function): this;
-  off(event: ServerEvent, handler: Function): this;
-  emit(event: ServerEvent, ...args: any[]): boolean;
-  emitAsync(event: ServerEvent, ...args: any[]): Promise<void>;
-  clearHandlers(event?: ServerEvent): this;
-}
-```
-
-## Project Structure
-
-```
-src/
-├── routes/              # Route files (auto-discovered)
-│   ├── userRoute.ts
-│   ├── orderRoute.ts
-│   └── admin/
-│       └── adminRoute.ts
-├── controllers/         # Business logic
-├── middleware/          # Custom middleware
-├── plugins/             # Custom plugins
-└── index.ts             # Entry point
-```
-
-## TypeScript Support
-
-Magik is written in TypeScript and provides full type definitions:
+## TypeScript Types
 
 ```typescript
 import type {
-  MagikPlugin,
-  MagikPluginConfig,
+  // Server
+  MagikServerConfig,
   IMagikServer,
-  RouteDefinition,
+
+  // Database
+  IMagikDatabaseAdapter,
+  IRepository,
+  IRepositoryRegistry,
+  QueryOptions,
+
+  // Auth
+  AuthConfig,
+  IUserAdapter,
+
+  // Middleware
   MiddlewareConfig,
+  MiddlewarePreset,
   MiddlewareCategory,
-  AuthTypes,
-  ServerEvent,
+
+  // Routes
+  RouteDefinition,
   PathSegment,
   MagikRequest,
-  MagikGetRequest,
-} from '@anandamide/magik/types';
+
+  // Plugins
+  MagikPlugin,
+  MagikPluginConfig,
+
+  // Events
+  ServerEvent,
+} from '@magikio/magik';
+```
+
+## Migration from v0.x
+
+If upgrading from a version with auto-loaded presets:
+
+```typescript
+// Before (v0.x) - presets auto-loaded
+const server = await MagikServer.init({
+  name: 'my-api',
+});
+
+// After (v1.x) - presets are opt-in
+import { allPresets } from '@magikio/magik';
+
+const server = await MagikServer.init({
+  name: 'my-api',
+  presets: allPresets, // Explicitly include presets
+});
 ```
 
 ## Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details.
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md).
 
 ## License
 
-MIT © [MagikIO](https://github.com/MagikIO)
-
----
-
-Made with 🪄 by the MagikIO team
+MIT
