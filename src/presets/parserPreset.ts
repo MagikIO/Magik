@@ -1,6 +1,5 @@
 import cookieParser from 'cookie-parser';
 import express from 'express';
-import type { RequestHandler } from 'express-serve-static-core';
 import methodOverride from 'method-override';
 import type { MiddlewarePreset } from '../types/middleware';
 
@@ -38,13 +37,13 @@ export const parserPreset: MiddlewarePreset = {
       name: 'cookie-parser',
       category: 'parser',
       priority: 83,
-      handler: cookieParser() as RequestHandler,
+      handler: cookieParser() as any,
     },
     {
       name: 'method-override',
       category: 'parser',
       priority: 82,
-      handler: methodOverride('_method') as unknown as RequestHandler,
+      handler: methodOverride('_method') as any,
     },
   ],
 };

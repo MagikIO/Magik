@@ -1,5 +1,5 @@
 import consola from 'consola';
-import type { ErrorRequestHandler } from 'express';
+import type { ErrorRequestHandler, Request, Response, NextFunction } from 'express-serve-static-core';
 import type { MagikPlugin } from '../types/plugins';
 import type { IMagikServer } from '../types/server';
 
@@ -26,35 +26,41 @@ export class ErrorHandlingPlugin implements MagikPlugin {
   };
 
   onInstall(server: IMagikServer) {
-    const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
+    const errorHandler: ErrorRequestHandler = (
+      err: unknown,
+      req: Request,
+      res: Response,
+      _next: NextFunction,
+    ) => {
       // Log the error
+      const error = err as Error & { statusCode?: number; status?: number };
       consola.error('[ErrorHandling] Request error:', {
         method: req.method,
         path: req.path,
-        error: err.message,
-        stack: server.DevMode ? err.stack : undefined,
+        error: error.message,
+        stack: server.DevMode ? error.stack : undefined,
       });
 
       // Determine status code
-      const statusCode = err.statusCode || err.status || 500;
+      const statusCode = error.statusCode || error.status || 500;
 
       // Send error response
       if (req.accepts('json')) {
         res.status(statusCode).json({
-          error: server.DevMode ? err.message : 'Internal Server Error',
-          ...(server.DevMode && { stack: err.stack }),
+          error: server.DevMode ? error.message : 'Internal Server Error',
+          ...(server.DevMode && { stack: error.stack }),
         });
       } else {
         res.status(statusCode).send(
           server.DevMode
-            ? `<pre>${err.stack}</pre>`
+            ? `<pre>${error.stack}</pre>`
             : 'Internal Server Error',
         );
       }
     };
 
-    // Register as last middleware
-    server.app.use(errorHandler);
+    // Register as last middleware (cast needed for Express's overload resolution)
+    server.app.use(errorHandler as any);
 
     server.DEBUG &&
       consola.success('[ErrorHandlingPlugin] Global error handler installed');

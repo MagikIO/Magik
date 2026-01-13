@@ -301,13 +301,23 @@ export class MiddlewareEngine implements IMiddlewareEngine {
 
   /**
    * Apply middleware handlers to the Express app.
+   * Automatically detects error handlers (4 parameters) and standard handlers (3 parameters).
    */
   private applyMiddleware(middlewares: MiddlewareConfig[]) {
     middlewares.forEach((m) => {
       try {
-        const handler = m.handler as RequestHandler;
-        this.app.use(handler);
-        this.debug && consola.info(`[MiddlewareEngine] Applied: ${m.name}`);
+        // Detect error handler by parameter count (4 params = error handler)
+        const isErrorHandler = m.handler.length === 4;
+        
+        if (isErrorHandler) {
+          // Error handlers must be cast to any to satisfy Express's overload resolution
+          this.app.use(m.handler as any);
+        } else {
+          // Standard middleware handlers
+          this.app.use(m.handler as RequestHandler);
+        }
+        
+        this.debug && consola.info(`[MiddlewareEngine] Applied: ${m.name}${isErrorHandler ? ' (error handler)' : ''}`);
       } catch (error) {
         consola.error(`[MiddlewareEngine] Error applying middleware ${m.name}:`, error);
         throw error;

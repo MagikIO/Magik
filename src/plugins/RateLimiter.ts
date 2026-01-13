@@ -58,10 +58,10 @@ export class RateLimiterPlugin implements MagikPlugin {
           windowMs: this.options.windowMs,
           max: this.options.max,
           message: this.options.message,
-          skip: this.options.skip,
+          skip: this.options.skip ? ((req) => this.options.skip!(req as any)) : undefined,
           standardHeaders: true,
           legacyHeaders: false,
-        }) as unknown as MiddlewareConfig['handler'],
+        }) as any,
       },
     ];
   }

@@ -1,4 +1,3 @@
-import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { Request, Response, NextFunction } from 'express';
 
 export type MagikMiddleware = (
@@ -8,7 +7,7 @@ export type MagikMiddleware = (
 ) => void | Promise<void>;
 
 export type MagikErrorHandler = (
-  err: any,
+  err: unknown,
   req: Request,
   res: Response,
   next: NextFunction
@@ -57,19 +56,14 @@ export interface AuthMiddlewareMap {
 // Middleware Handler Types
 // ============================================================================
 
+/**
+ * Flexible middleware function type that accepts various Express middleware formats.
+ * This union allows compatibility with different middleware libraries while maintaining type safety.
+ */
 export type MiddlewareFn =
   | MagikMiddleware
   | MagikErrorHandler
-  | ((
-      req: IncomingMessage,
-      res: ServerResponse<IncomingMessage>,
-      next: (err?: unknown) => void,
-    ) => void)
-  | ((
-      req: IncomingMessage,
-      res: ServerResponse,
-      next: (err?: unknown) => void,
-    ) => void);
+  | ((req: any, res: any, next: any) => any);
 
 // ============================================================================
 // Middleware Configuration
