@@ -42,6 +42,7 @@ import { allPresets } from '../presets';
 export class MiddlewareEngine implements IMiddlewareEngine {
   private middlewareRegistry = new Map<string, MiddlewareConfig>();
   private orderedMiddleware: MiddlewareConfig[] = [];
+
   private authMiddleware: AuthMiddlewareMap = {};
   private roleHandler?: (roles: string[]) => RequestHandler;
   private fallbackHandler?: (authType: string) => RequestHandler;
