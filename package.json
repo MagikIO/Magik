@@ -43,7 +43,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsc -p tsconfig.json",
     "dev": "tsup --watch",
     "test": "vitest",
     "test:coverage": "vitest --coverage",

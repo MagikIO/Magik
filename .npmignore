@@ -1,0 +1,5 @@
+./src
+./.git
+node_modules
+biome.json
+tsup.config.ts
