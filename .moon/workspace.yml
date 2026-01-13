@@ -1,57 +1,11 @@
-# moon workspace configuration
 # https://moonrepo.dev/docs/config/workspace
+$schema: './cache/schemas/workspace.json'
 
-$schema: 'https://moonrepo.dev/schemas/workspace.json'
+# extends: './shared/workspace.yml'
 
-# Extend from a shared configuration file (if any)
-# extends: 
-
-# Project discovery and location
 projects:
   - 'apps/*'
   - 'packages/*'
-
-# VCS configuration
 vcs:
   manager: 'git'
   defaultBranch: 'main'
-
-# Node.js configuration
-node:
-  version: '18.0.0'
-  packageManager: 'pnpm'
-  pnpm:
-    version: '9.15.4'
-
-# Runner configuration
-runner:
-  # Cache outputs for faster rebuilds
-  cacheLifetime: '7 days'
-  
-  # Run tasks in topological order
-  inheritColorsForPipedTasks: true
-  
-  # Log level
-  logRunningCommand: true
-
-# Hasher configuration for caching
-hasher:
-  # Optimize cache hits
-  optimization: 'performance'
-  
-  # Files/dirs to ignore when hashing
-  ignoreMissingPatterns: true
-  ignorePatterns:
-    - '**/.moon/cache/**'
-    - '**/node_modules/**'
-    - '**/dist/**'
-    - '**/.turbo/**'
-
-# Notifier configuration
-notifier:
-  webhookUrl: ''
-
-# Generator configuration
-generator:
-  templates:
-    - './templates'
