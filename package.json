@@ -1,0 +1,47 @@
+{
+  "name": "@magik_io/monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Magik monorepo - Plugin-based Express server framework",
+  "type": "module",
+  "scripts": {
+    "build": "moon run :build",
+    "dev": "moon run :dev",
+    "test": "moon run :test",
+    "typecheck": "moon run :typecheck",
+    "lint": "moon run :lint",
+    "format": "moon run :format",
+    "clean": "moon run :clean",
+    "ci:build": "moon ci",
+    "ci:test": "moon run :test --affected"
+  },
+  "keywords": [
+    "express",
+    "server",
+    "framework",
+    "typescript",
+    "monorepo",
+    "magik"
+  ],
+  "author": "Abourass <github.com/Abourass>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MagikIO/Magik.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MagikIO/Magik/issues"
+  },
+  "homepage": "https://github.com/MagikIO/Magik#readme",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.11",
+    "@moonrepo/cli": "^1.30.3",
+    "typescript": "^5.3.3",
+    "vitest": "^4.0.16"
+  }
+}

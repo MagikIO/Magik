@@ -1,0 +1,9 @@
+# moon project configuration for @magik_io/session-memory
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: 'library'
+language: 'typescript'
+tags: ['session', 'memory', 'store', 'development']
+
+dependsOn:
+  - 'preset-session'

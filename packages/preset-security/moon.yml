@@ -1,0 +1,9 @@
+# moon project configuration for @magik_io/preset-security
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: 'library'
+language: 'typescript'
+tags: ['preset', 'security', 'middleware']
+
+dependsOn:
+  - 'magik'

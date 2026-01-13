@@ -1,0 +1,12 @@
+# moon project configuration for @magik_io/magik
+# https://moonrepo.dev/docs/config/project
+
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+# Project metadata
+type: 'application'
+language: 'typescript'
+tags: ['core', 'framework']
+
+# Dependencies - empty array since this is the core package
+dependsOn: []

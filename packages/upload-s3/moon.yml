@@ -1,0 +1,9 @@
+# moon project configuration for @magik_io/upload-s3
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: 'library'
+language: 'typescript'
+tags: ['upload', 's3', 'storage']
+
+dependsOn:
+  - 'magik'

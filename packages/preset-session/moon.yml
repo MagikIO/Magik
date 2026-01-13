@@ -1,0 +1,9 @@
+# moon project configuration for @magik_io/preset-session
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: 'library'
+language: 'typescript'
+tags: ['preset', 'session', 'middleware']
+
+dependsOn:
+  - 'magik'
