@@ -1,0 +1,51 @@
+{
+  "name": "@magik_io/preset-logging",
+  "version": "1.0.0",
+  "description": "Logging middleware preset for Magik (morgan with colorized output)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "magik",
+    "logging",
+    "morgan",
+    "middleware"
+  ],
+  "author": "Abourass",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MagikIO/Magik.git",
+    "directory": "packages/preset-logging"
+  },
+  "peerDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/express-serve-static-core": "^5.1.0",
+    "express": "^4.21.2",
+    "express-serve-static-core": "^0.1.1"
+  },
+  "dependencies": {
+    "@magik_io/magik": "workspace:*",
+    "chalk": "^5.3.0",
+    "consola": "^3.2.3",
+    "morgan": "^1.10.1"
+  },
+  "devDependencies": {
+    "@types/morgan": "^1.9.10",
+    "typescript": "^5.3.3"
+  }
+}

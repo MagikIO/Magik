@@ -405,7 +405,7 @@ export class MagikServer<
 
   // ========== Event System ==========
 
-  private async setupEventSystem() {
+  private setupEventSystem() {
     this.eventEngine
       .on('beforeStart', async () => {
         await Promise.all(

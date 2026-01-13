@@ -1,4 +1,6 @@
+import type { IncomingMessage } from 'node:http';
 import type { NextFunction, Request, Response } from 'express';
+import type { ServerResponse } from 'http';
 
 export type MagikMiddleware = (
   req: Request,
@@ -63,7 +65,16 @@ export interface AuthMiddlewareMap {
 export type MiddlewareFn =
   | MagikMiddleware
   | MagikErrorHandler
-  | ((req: any, res: any, next: any) => any);
+  | ((
+      req: IncomingMessage,
+      res: ServerResponse<IncomingMessage>,
+      next: (err?: unknown) => void,
+    ) => void)
+  | ((
+      req: IncomingMessage,
+      res: ServerResponse,
+      next: (err?: unknown) => void,
+    ) => void);
 
 // ============================================================================
 // Middleware Configuration
