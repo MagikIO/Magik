@@ -1,19 +1,24 @@
+import type { IncomingMessage, Server, ServerResponse } from 'node:http';
 import type { Express } from 'express';
-import type { Server, IncomingMessage, ServerResponse } from 'http';
-import type { EventEngine } from '../engines/EventEngine';
-import type { MiddlewareEngine } from '../engines/MiddlewareEngine';
-import type { RouterManager } from '../engines/RouterManager';
-import type { ServerStatusType } from './events';
-import type { MagikPlugin } from './plugins';
-import type { MiddlewarePreset } from './middleware';
-import type { IMagikDatabaseAdapter, MagikDatabaseConfig } from './database';
-import type { AuthConfig } from './auth';
-import type { RouteDiscoveryConfig } from './routes';
+import type { EventEngine } from '../engines/EventEngine.js';
+import type { MiddlewareEngine } from '../engines/MiddlewareEngine.js';
+import type { RouterManager } from '../engines/RouterManager.js';
+import type { AuthConfig } from './auth.js';
+import type { IMagikDatabaseAdapter, MagikDatabaseConfig } from './database.js';
+import type { ServerStatusType } from './events.js';
+import type { MiddlewarePreset } from './middleware.js';
+import type { MagikPlugin } from './plugins.js';
+import type { RouteDiscoveryConfig } from './routes.js';
 
 /**
  * Server status states.
  */
-export type ServerStatus = 'STARTING' | 'ONLINE' | 'OFFLINE' | 'SHUTTING_DOWN' | 'ERROR';
+export type ServerStatus =
+  | 'STARTING'
+  | 'ONLINE'
+  | 'OFFLINE'
+  | 'SHUTTING_DOWN'
+  | 'ERROR';
 
 // ============================================================================
 // Server Configuration
@@ -21,12 +26,12 @@ export type ServerStatus = 'STARTING' | 'ONLINE' | 'OFFLINE' | 'SHUTTING_DOWN' |
 
 /**
  * Configuration options for creating a MagikServer.
- * 
+ *
  * @typeParam TServerName - String literal type for the server name
  * @typeParam TAuthTypes - String literal union of auth type names
  * @typeParam TConnection - Database connection type (optional)
  * @typeParam TServices - Database service names (optional)
- * 
+ *
  * @example
  * ```typescript
  * // Minimal config (no database, no auth)
@@ -34,7 +39,7 @@ export type ServerStatus = 'STARTING' | 'ONLINE' | 'OFFLINE' | 'SHUTTING_DOWN' |
  *   name: 'my-api',
  *   port: 3000,
  * });
- * 
+ *
  * // Full config with database and auth
  * const server = await MagikServer.init({
  *   name: 'my-api',
@@ -61,25 +66,25 @@ export interface MagikServerConfig<
   TConnection = unknown,
   TServices extends string = string,
 > {
-  /** 
+  /**
    * Unique name for this server instance.
    * Used for logging and identification.
    */
   name: TServerName;
-  
-  /** 
+
+  /**
    * Port to listen on.
    * Falls back to PORT environment variable, then 5000.
    */
   port?: number;
-  
-  /** 
+
+  /**
    * Host to bind to.
    * @default '0.0.0.0'
    */
   host?: string;
-  
-  /** 
+
+  /**
    * Enable debug mode for verbose logging.
    * @default false (or DEBUG env var)
    */
@@ -90,13 +95,13 @@ export interface MagikServerConfig<
    * @default process.env.NODE_ENV or 'development'
    */
   mode?: 'development' | 'production';
-  
+
   /**
    * Database configuration.
-   * 
+   *
    * Omit entirely if this server doesn't need a database.
    * The adapter pattern allows any database to be used.
-   * 
+   *
    * @example
    * ```typescript
    * database: {
@@ -115,10 +120,10 @@ export interface MagikServerConfig<
 
   /**
    * Authentication middleware configuration.
-   * 
+   *
    * Define your own auth types and their middleware handlers.
    * If not provided, routes with `auth` will throw an error.
-   * 
+   *
    * @example
    * ```typescript
    * auth: {
@@ -178,21 +183,19 @@ export interface MagikServerConfig<
   /**
    * Disable automatic route discovery.
    * Useful when you want to register routes manually.
-   * 
+   *
    * @default false
    */
   disableRouteDiscovery?: boolean;
 }
 
-
 // ============================================================================
 // Server Interface
 // ============================================================================
 
-
 /**
  * Interface for a running MagikServer instance.
- * 
+ *
  * @typeParam TServerName - String literal type for the server name
  * @typeParam TConnection - Database connection type
  * @typeParam TServices - Database service names
@@ -234,17 +237,16 @@ export interface IMagikServer<
   /** Event engine for lifecycle events */
   readonly eventEngine: EventEngine;
 
-
   // ========== Database ==========
 
   /**
    * Database adapter instance (if configured).
-   * 
+   *
    * @example
    * ```typescript
    * // Get a connection
    * const conn = server.db?.getConnection('main');
-   * 
+   *
    * // Check connection status
    * if (server.db?.isConnected('main')) {
    *   // ...
@@ -255,11 +257,10 @@ export interface IMagikServer<
 
   /**
    * Primary database connection (if configured).
-   * 
+   *
    * Shorthand for `server.db?.getConnection(primaryService)`.
    */
   readonly primaryConnection?: TConnection;
-
 
   // ========== Methods ==========
 
@@ -271,7 +272,7 @@ export interface IMagikServer<
 
   /**
    * Gracefully shutdown the server.
-   * 
+   *
    * This will:
    * 1. Stop accepting new connections
    * 2. Emit 'beforeStop' event
@@ -281,14 +282,13 @@ export interface IMagikServer<
   shutdownServer(): Promise<void>;
 }
 
-
 // ============================================================================
 // Config Type Inference Helpers
 // ============================================================================
 
 /**
  * Infer the auth types from a server config.
- * 
+ *
  * @example
  * ```typescript
  * const config = {
@@ -300,12 +300,12 @@ export interface IMagikServer<
  *     }
  *   }
  * } satisfies MagikServerConfig;
- * 
+ *
  * type MyAuthTypes = InferAuthTypes<typeof config>;
  * // Result: 'ensureAuthenticated' | 'ensureAdmin'
  * ```
  */
-export type InferAuthTypes<T extends MagikServerConfig> = 
+export type InferAuthTypes<T extends MagikServerConfig> =
   T extends MagikServerConfig<any, infer A, any, any> ? A : never;
 
 /**

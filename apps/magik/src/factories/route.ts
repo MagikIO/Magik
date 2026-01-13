@@ -1,5 +1,5 @@
 import type { z } from 'zod';
-import type { PathSegment, TypedRouteConfig } from '../types/routes';
+import type { PathSegment, TypedRouteConfig } from '../types/routes.js';
 
 /**
  * Factory function to create a typed route configuration

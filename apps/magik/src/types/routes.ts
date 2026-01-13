@@ -4,8 +4,8 @@ import type {
   RequestHandler,
   Response,
 } from 'express-serve-static-core';
-import type { z, ZodObject } from 'zod';
-import type { AuthTypes } from './auth';
+import type { ZodObject, z } from 'zod';
+import type { AuthTypes } from './auth.js';
 
 // ============================================================================
 // Path Types
@@ -23,7 +23,9 @@ export type HTTPMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 // Validation Schema
 // ============================================================================
 
-export type ValidationSchema<Shape extends Record<string, any> = Record<string, any>> = ZodObject<Shape>;
+export type ValidationSchema<
+  Shape extends Record<string, any> = Record<string, any>,
+> = ZodObject<Shape>;
 
 // ============================================================================
 // Request Types

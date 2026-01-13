@@ -1,7 +1,7 @@
-import { EventEmitter } from 'events';
 import consola from 'consola';
-import type { ServerEvent, ServerEventMap } from '../types/events';
-import type { IEventEngine } from '../types/engines';
+import { EventEmitter } from 'events';
+import type { IEventEngine } from '../types/engines.js';
+import type { ServerEvent, ServerEventMap } from '../types/events.js';
 
 /**
  * EventEngine handles server lifecycle events and custom event handling
@@ -50,7 +50,10 @@ export class EventEngine implements IEventEngine {
    * @param handler - The handler function
    * @returns this for chaining
    */
-  on<K extends keyof ServerEventMap>(event: K, handler: ServerEventMap[K]): this;
+  on<K extends keyof ServerEventMap>(
+    event: K,
+    handler: ServerEventMap[K],
+  ): this;
   on(event: ServerEvent, handler: (...args: any[]) => void): this;
   on(event: ServerEvent, handler: (...args: any[]) => void): this {
     const handlers = this.handlers.get(event) || new Set();
@@ -68,7 +71,10 @@ export class EventEngine implements IEventEngine {
    * @param handler - The handler function to remove
    * @returns this for chaining
    */
-  off<K extends keyof ServerEventMap>(event: K, handler: ServerEventMap[K]): this;
+  off<K extends keyof ServerEventMap>(
+    event: K,
+    handler: ServerEventMap[K],
+  ): this;
   off(event: ServerEvent, handler: (...args: any[]) => void): this;
   off(event: ServerEvent, handler: (...args: any[]) => void): this {
     const handlers = this.handlers.get(event);

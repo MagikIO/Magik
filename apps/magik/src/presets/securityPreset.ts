@@ -1,6 +1,6 @@
 import cors from 'cors';
 import helmet from 'helmet';
-import type { MiddlewarePreset } from '../types/middleware';
+import type { MiddlewarePreset } from '../types/middleware.js';
 
 /**
  * Security preset provides essential security middleware

@@ -1,7 +1,7 @@
 import type { RequestHandler } from 'express';
-import type { AuthTypes, MiddlewareConfig } from './middleware';
-import type { MagikPlugin, PluginRouteMap } from './plugins';
-import type { RouteDefinition } from './routes';
+import type { AuthTypes, MiddlewareConfig } from './middleware.js';
+import type { MagikPlugin, PluginRouteMap } from './plugins.js';
+import type { RouteDefinition } from './routes.js';
 
 // ============================================================================
 // Middleware Engine Interface

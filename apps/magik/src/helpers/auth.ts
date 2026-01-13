@@ -1,5 +1,9 @@
 import type { RequestHandler } from 'express';
-import type { Request, Response, NextFunction } from 'express-serve-static-core';
+import type {
+  NextFunction,
+  Request,
+  Response,
+} from 'express-serve-static-core';
 import type { IUserAdapter } from '../types/user-adapter.js';
 
 // ============================================================================
@@ -49,7 +53,7 @@ const defaultOptions: Required<AuthMiddlewareOptions> = {
 export function createRoleMiddleware<TUser>(
   adapter: IUserAdapter<TUser>,
   requiredRoles: string[],
-  options: AuthMiddlewareOptions = {}
+  options: AuthMiddlewareOptions = {},
 ): RequestHandler {
   const opts = { ...defaultOptions, ...options };
 
@@ -109,7 +113,7 @@ export function createRoleMiddleware<TUser>(
 export function createAllRolesMiddleware<TUser>(
   adapter: IUserAdapter<TUser>,
   requiredRoles: string[],
-  options: AuthMiddlewareOptions = {}
+  options: AuthMiddlewareOptions = {},
 ): RequestHandler {
   const opts = { ...defaultOptions, ...options };
 
@@ -161,7 +165,7 @@ export function createAllRolesMiddleware<TUser>(
 export function createPermissionMiddleware<TUser>(
   adapter: IUserAdapter<TUser>,
   requiredPermissions: string[],
-  options: AuthMiddlewareOptions = {}
+  options: AuthMiddlewareOptions = {},
 ): RequestHandler {
   const opts = { ...defaultOptions, ...options };
 
@@ -213,7 +217,7 @@ export function createPermissionMiddleware<TUser>(
 export function createAllPermissionsMiddleware<TUser>(
   adapter: IUserAdapter<TUser>,
   requiredPermissions: string[],
-  options: AuthMiddlewareOptions = {}
+  options: AuthMiddlewareOptions = {},
 ): RequestHandler {
   const opts = { ...defaultOptions, ...options };
 
@@ -273,7 +277,7 @@ export function createAllPermissionsMiddleware<TUser>(
  */
 export function createAuthenticatedMiddleware<TUser>(
   adapter: IUserAdapter<TUser>,
-  options: AuthMiddlewareOptions = {}
+  options: AuthMiddlewareOptions = {},
 ): RequestHandler {
   const opts = { ...defaultOptions, ...options };
 
@@ -317,7 +321,7 @@ export function createAuthenticatedMiddleware<TUser>(
  */
 export function createTwoFactorMiddleware<TUser>(
   adapter: IUserAdapter<TUser>,
-  options: AuthMiddlewareOptions = {}
+  options: AuthMiddlewareOptions = {},
 ): RequestHandler {
   const opts = { ...defaultOptions, ...options };
 
@@ -385,7 +389,7 @@ export function createTwoFactorMiddleware<TUser>(
  */
 export function createRoleHandlerFactory<TUser>(
   adapter: IUserAdapter<TUser>,
-  options: AuthMiddlewareOptions = {}
+  options: AuthMiddlewareOptions = {},
 ): (roles: string[]) => RequestHandler {
   return (roles: string[]) => createRoleMiddleware(adapter, roles, options);
 }
@@ -399,7 +403,7 @@ export function createRoleHandlerFactory<TUser>(
  */
 export function createPermissionHandlerFactory<TUser>(
   adapter: IUserAdapter<TUser>,
-  options: AuthMiddlewareOptions = {}
+  options: AuthMiddlewareOptions = {},
 ): (permissions: string[]) => RequestHandler {
   return (permissions: string[]) =>
     createPermissionMiddleware(adapter, permissions, options);
@@ -421,7 +425,7 @@ export function createPermissionHandlerFactory<TUser>(
 export function createAuthWithRolesMiddleware<TUser>(
   adapter: IUserAdapter<TUser>,
   roles: string[],
-  options: AuthMiddlewareOptions = {}
+  options: AuthMiddlewareOptions = {},
 ): RequestHandler {
   const opts = { ...defaultOptions, ...options };
 

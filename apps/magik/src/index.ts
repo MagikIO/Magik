@@ -1,22 +1,19 @@
 // Core
-export { MagikServer } from './core/MagikServer';
-export { discoverRoutes } from './core/discoverRoutes';
+
+export { discoverRoutes } from './core/discoverRoutes.js';
+export { MagikServer } from './core/MagikServer.js';
 
 // Decorators
 export {
-  Router,
+  Delete,
   Get,
+  getBasePath,
+  getRoutes,
+  Patch,
   Post,
   Put,
-  Delete,
-  Patch,
-  getRoutes,
-  getBasePath,
-} from './decorators/route';
-
-// Factories
-export { createRoute } from './factories/route';
-
+  Router,
+} from './decorators/route.js';
 // Engines
 export {
   EventEngine,
@@ -24,110 +21,108 @@ export {
   PluginEngine,
   RouteEngine,
   RouterManager,
-} from './engines';
-
+} from './engines/index.js';
+// Factories
+export { createRoute } from './factories/route.js';
+export type { AuthMiddlewareOptions } from './helpers/auth.js';
+// Auth Helpers
+export {
+  createAllPermissionsMiddleware,
+  createAllRolesMiddleware,
+  createAuthenticatedMiddleware,
+  createAuthWithRolesMiddleware,
+  createPermissionHandlerFactory,
+  createPermissionMiddleware,
+  createRoleHandlerFactory,
+  createRoleMiddleware,
+  createTwoFactorMiddleware,
+} from './helpers/auth.js';
 // Plugins
 export {
   DebugPlugin,
   ErrorHandlingPlugin,
   GracefulShutdownPlugin,
   RateLimiterPlugin,
-} from './plugins';
-
+} from './plugins/index.js';
 // Presets
-export { allPresets, parserPreset, securityPreset } from './presets';
-
-// Auth Helpers
-export {
-  createRoleMiddleware,
-  createAllRolesMiddleware,
-  createPermissionMiddleware,
-  createAllPermissionsMiddleware,
-  createAuthenticatedMiddleware,
-  createTwoFactorMiddleware,
-  createRoleHandlerFactory,
-  createPermissionHandlerFactory,
-  createAuthWithRolesMiddleware,
-} from './helpers/auth';
-
-export type { AuthMiddlewareOptions } from './helpers/auth';
+export { allPresets, parserPreset, securityPreset } from './presets/index.js';
 
 // Types
 export type {
-  // Routes
-  PathSegment,
+  // Auth
+  AuthConfig,
+  AuthMiddlewareMap,
+  AuthTypes,
+  ConnectionHooks,
+  ConnectionOptions,
+  ConnectionResult,
+  // Database
+  ConnectionState,
+  EventHandler,
+  EventHandlerMap,
+  ExtractAuthTypes,
   HTTPMethod,
-  ValidationSchema,
-  MagikRequest,
+  IEventEngine,
+  IExtendedRepository,
+  IMagikDatabaseAdapter,
+  IMagikServer,
+  // Engines
+  IMiddlewareEngine,
+  InferConnection,
+  InferEntity,
+  InferId,
+  InferServices,
+  InferUser,
+  IPluginEngine,
+  IRepository,
+  IRepositoryFactory,
+  IRepositoryRegistry,
+  IRouteEngine,
+  // User Adapter
+  IUserAdapter,
+  MagikDatabaseConfig,
   MagikGetRequest,
-  MagikRouteFn,
   MagikGetRouteFn,
-  UploadConfig,
-  RouteDefinition,
-  TypedRouteConfig,
-  RouteConfig,
+  MagikPlugin,
+  // Plugins
+  MagikPluginConfig,
+  MagikRequest,
+  MagikRouteFn,
+  // Server
+  MagikServerConfig,
   // Middleware
   MiddlewareCategory,
-  AuthTypes,
-  AuthMiddlewareMap,
-  MiddlewareFn,
   MiddlewareConfig,
+  MiddlewareFn,
   MiddlewarePreset,
+  // Routes
+  PathSegment,
+  PluginRouteMap,
+  PopulateOptions,
+  // Repository
+  QueryOptions,
+  RepositoryConfig,
+  RouteConfig,
+  RouteDefinition,
   // Events
   ServerEvent,
   ServerStatus,
   ServerStatusType,
-  EventHandler,
-  EventHandlerMap,
-  // Plugins
-  MagikPluginConfig,
-  PluginRouteMap,
-  MagikPlugin,
-  // Server
-  MagikServerConfig,
-  IMagikServer,
-  // Engines
-  IMiddlewareEngine,
-  IRouteEngine,
-  IPluginEngine,
-  IEventEngine,
-  // Database
-  ConnectionState,
-  ConnectionOptions,
-  ConnectionHooks,
-  ConnectionResult,
-  IMagikDatabaseAdapter,
-  MagikDatabaseConfig,
-  InferConnection,
-  InferServices,
-  // Repository
-  QueryOptions,
-  PopulateOptions,
-  IRepository,
-  IRepositoryRegistry,
-  IRepositoryFactory,
-  IExtendedRepository,
-  RepositoryConfig,
-  InferEntity,
-  InferId,
-  // User Adapter
-  IUserAdapter,
   SimpleUser,
-  InferUser,
-  // Auth
-  AuthConfig,
-  ExtractAuthTypes,
-} from './types';
+  TypedRouteConfig,
+  UploadConfig,
+  ValidationSchema,
+} from './types/index.js';
 
 // Re-export utilities from types
 export {
+  createDenyAuth,
+  createPassthroughAuth,
+  createPlaceholderAuth,
+  createUserAdapter,
+  GenericUserAdapter,
   isDatabaseAdapter,
   isRoleArray,
-  createPlaceholderAuth,
-  createPassthroughAuth,
-  createDenyAuth,
-  GenericUserAdapter,
-  SimpleUserAdapter,
   isUserAdapter,
-  createUserAdapter,
-} from './types';
+  SimpleUserAdapter,
+} from './types/index.js';

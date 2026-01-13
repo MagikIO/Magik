@@ -1,7 +1,7 @@
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import methodOverride from 'method-override';
-import type { MiddlewarePreset } from '../types/middleware';
+import type { MiddlewarePreset } from '../types/middleware.js';
 
 /**
  * Parser preset provides request body and cookie parsing

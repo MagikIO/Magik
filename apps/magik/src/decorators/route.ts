@@ -1,5 +1,9 @@
 import 'reflect-metadata';
-import type { HTTPMethod, PathSegment, RouteDefinition } from '../types/routes';
+import type {
+  HTTPMethod,
+  PathSegment,
+  RouteDefinition,
+} from '../types/routes.js';
 
 // ============================================================================
 // Metadata Keys
@@ -26,19 +30,16 @@ const BASE_PATH_KEY = Symbol('basePath');
  * ```
  */
 export function Router(basePath: PathSegment) {
-  return function <T extends new (...args: any[]) => any>(target: T) {
+  return <T extends new (...args: any[]) => any>(target: T) => {
     // Store the base path on the class
     Reflect.defineMetadata(BASE_PATH_KEY, basePath, target);
 
     // Add helper method to get routes from instance
-    target.prototype.getRoutes = function (): RouteDefinition[] {
-      return Reflect.getMetadata(ROUTES_KEY, target) || [];
-    };
+    target.prototype.getRoutes = (): RouteDefinition[] =>
+      Reflect.getMetadata(ROUTES_KEY, target) || [];
 
     // Add helper method to get base path from instance
-    target.prototype.getBasePath = function (): PathSegment {
-      return basePath;
-    };
+    target.prototype.getBasePath = (): PathSegment => basePath;
 
     return target;
   };
@@ -59,13 +60,14 @@ interface RouteMetadata {
 }
 
 function createMethodDecorator(method: HTTPMethod) {
-  return function (path: PathSegment = "/") {
-    return function (
+  return (path: PathSegment = '/') =>
+    (
       target: object,
       propertyKey: string,
       descriptor: PropertyDescriptor,
-    ): PropertyDescriptor {
-      const routes: RouteMetadata[] = Reflect.getMetadata(ROUTES_KEY, target.constructor) || [];
+    ): PropertyDescriptor => {
+      const routes: RouteMetadata[] =
+        Reflect.getMetadata(ROUTES_KEY, target.constructor) || [];
 
       // Store the original method
       const originalMethod = descriptor.value;
@@ -101,7 +103,6 @@ function createMethodDecorator(method: HTTPMethod) {
 
       return descriptor;
     };
-  };
 }
 
 // ============================================================================
@@ -196,7 +197,6 @@ export const Delete = createMethodDecorator('delete');
  */
 export const Patch = createMethodDecorator('patch');
 
-
 // ============================================================================
 // Metadata Accessors
 // ============================================================================
@@ -264,9 +264,3 @@ export function getRouteMethodNames(target: Function): string[] {
   const routes = getRoutes(target);
   return routes.map((r) => r.propertyKey);
 }
-
-
-
-
-
-

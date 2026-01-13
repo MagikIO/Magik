@@ -1,6 +1,6 @@
-import type { IMagikServer } from "../types/server";
-import consola from "consola";
-import type { MagikPlugin } from "../types/plugins";
+import consola from 'consola';
+import type { MagikPlugin } from '../types/plugins.js';
+import type { IMagikServer } from '../types/server.js';
 
 export class GracefulShutdownPlugin implements MagikPlugin {
   config = {
@@ -45,7 +45,7 @@ export class GracefulShutdownPlugin implements MagikPlugin {
       if (server.status === 'ONLINE') {
         await server.shutdownServer();
       }
-      
+
       clearTimeout(forceShutdownTimer);
       consola.success('[GracefulShutdown] Clean shutdown complete');
     } catch (error) {

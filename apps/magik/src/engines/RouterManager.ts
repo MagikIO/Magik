@@ -1,7 +1,7 @@
 import consola from 'consola';
-import type { HTTPMethod, PathSegment } from '../types/routes';
-import type { IMagikServer } from '../types/server';
-import { RouteEngine } from './RouteEngine';
+import type { HTTPMethod, PathSegment } from '../types/routes.js';
+import type { IMagikServer } from '../types/server.js';
+import { RouteEngine } from './RouteEngine.js';
 
 /**
  * RouterManager manages route registration across multiple prefixes

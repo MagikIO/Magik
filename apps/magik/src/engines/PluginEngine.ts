@@ -1,9 +1,9 @@
 import consola from 'consola';
-import type { IPluginEngine } from '../types/engines';
-import type { ServerEvent } from '../types/events';
-import type { MagikPlugin, PluginRouteMap } from '../types/plugins';
-import type { PathSegment } from '../types/routes';
-import type { IMagikServer } from '../types/server';
+import type { IPluginEngine } from '../types/engines.js';
+import type { ServerEvent } from '../types/events.js';
+import type { MagikPlugin, PluginRouteMap } from '../types/plugins.js';
+import type { PathSegment } from '../types/routes.js';
+import type { IMagikServer } from '../types/server.js';
 
 /**
  * PluginEngine manages plugin loading, dependencies, and lifecycle

@@ -1,6 +1,6 @@
 import rateLimit from 'express-rate-limit';
-import type { MiddlewareConfig } from '../types/middleware';
-import type { MagikPlugin } from '../types/plugins';
+import type { MiddlewareConfig } from '../types/middleware.js';
+import type { MagikPlugin } from '../types/plugins.js';
 
 export interface RateLimiterOptions {
   /** Time window in milliseconds (default: 15 minutes) */

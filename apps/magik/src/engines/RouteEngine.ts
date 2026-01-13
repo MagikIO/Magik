@@ -1,17 +1,20 @@
 import consola from 'consola';
 import { Router } from 'express';
+import type {
+  NextFunction,
+  RequestHandler,
+  Response,
+} from 'express-serve-static-core';
 import z from 'zod/v4';
-import type { IRouteEngine } from '../types/engines';
-
+import type { AuthTypes } from '../types/auth.js';
+import type { IRouteEngine } from '../types/engines.js';
 import type {
   HTTPMethod,
   MagikRequest,
   PathSegment,
-  RouteDefinition
-} from '../types/routes';
-import type { IMagikServer } from '../types/server';
-import type { RequestHandler, NextFunction, Response } from 'express-serve-static-core';
-import type { AuthTypes } from 'src/types/auth';
+  RouteDefinition,
+} from '../types/routes.js';
+import type { IMagikServer } from '../types/server.js';
 
 /**
  * RouteEngine manages route registration and request handling for a specific prefix
@@ -212,7 +215,6 @@ export class RouteEngine implements IRouteEngine {
               consola.error(''); // Empty line for readability
             }
 
-
             res.status(400).json({
               error: 'Validation failed',
               details: result.error.issues.map((issue) => ({
@@ -222,11 +224,11 @@ export class RouteEngine implements IRouteEngine {
               })),
             });
 
-            return
+            return;
           }
 
-          req.body = hasReqKeys 
-            ? (result.data as { body: any }).body 
+          req.body = hasReqKeys
+            ? (result.data as { body: any }).body
             : result.data;
           next?.();
         } catch (error) {
@@ -236,7 +238,7 @@ export class RouteEngine implements IRouteEngine {
     ];
   }
 
-    private getExpectedValue(issue: z.core.$ZodIssue): string {
+  private getExpectedValue(issue: z.core.$ZodIssue): string {
     switch (issue.code) {
       case 'invalid_type':
         return `type: ${(issue as any).expected}`;

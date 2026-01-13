@@ -1,7 +1,7 @@
 import consola from 'consola';
-import type { MagikPlugin } from '../types/plugins';
-import type { IMagikServer } from '../types/server';
-import type { ServerEventMap } from '../types/events';
+import type { ServerEventMap } from '../types/events.js';
+import type { MagikPlugin } from '../types/plugins.js';
+import type { IMagikServer } from '../types/server.js';
 
 /**
  * DebugPlugin enables debug logging and request inspection
@@ -62,10 +62,14 @@ export class DebugPlugin implements MagikPlugin {
         `Total Routes: ${total}`,
         '',
         'Routes by Prefix:',
-        ...Object.entries(byPrefix).map(([prefix, count]) => `  ${prefix}: ${count}`),
+        ...Object.entries(byPrefix).map(
+          ([prefix, count]) => `  ${prefix}: ${count}`,
+        ),
         '',
         'Routes by Method:',
-        ...Object.entries(methods).map(([method, count]) => `  ${method.toUpperCase()}: ${count}`),
+        ...Object.entries(methods).map(
+          ([method, count]) => `  ${method.toUpperCase()}: ${count}`,
+        ),
       ].join('\n'),
     });
   }
@@ -75,7 +79,9 @@ export class DebugPlugin implements MagikPlugin {
       beforeStart: () => consola.info('[DebugPlugin] Server is about to start'),
       afterStart: () => consola.info('[DebugPlugin] Server has started'),
       beforeStop: () => consola.info('[DebugPlugin] Server is about to stop'),
-      serverListening: (address: string | { port: number; family: string; address: string }) =>
+      serverListening: (
+        address: string | { port: number; family: string; address: string },
+      ) =>
         consola.info(
           `[DebugPlugin] Server is listening on ${JSON.stringify(address)}`,
         ),

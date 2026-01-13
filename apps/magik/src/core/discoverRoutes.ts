@@ -1,9 +1,13 @@
-import { resolve, relative } from 'node:path';
 import { existsSync } from 'node:fs';
+import { relative, resolve } from 'node:path';
 import consola from 'consola';
 import fg from 'fast-glob';
-import { getBasePath } from '../decorators/route';
-import type { PathSegment, RouteDefinition,RouteDiscoveryConfig } from '../types/routes';
+import { getBasePath } from '../decorators/route.js';
+import type {
+  PathSegment,
+  RouteDefinition,
+  RouteDiscoveryConfig,
+} from '../types/routes.js';
 
 // ============================================================================
 // Types
@@ -31,7 +35,9 @@ export interface RouteDiscoveryResult {
 // Default Configuration
 // ============================================================================
 
-const DEFAULT_CONFIG: Required<Omit<RouteDiscoveryConfig, 'routesDir' | 'pattern'>> = {
+const DEFAULT_CONFIG: Required<
+  Omit<RouteDiscoveryConfig, 'routesDir' | 'pattern'>
+> = {
   debug: false,
   extensions: ['js', 'ts', 'mjs', 'cjs'],
   ignore: [
@@ -149,7 +155,8 @@ export async function discoverRoutesWithMetadata(
     onlyFiles: true,
   });
 
-  debug && consola.info(`[DiscoverRoutes] Found ${routeFiles.length} route file(s)`);
+  debug &&
+    consola.info(`[DiscoverRoutes] Found ${routeFiles.length} route file(s)`);
 
   // Process each file
   for (const file of routeFiles) {
@@ -163,7 +170,8 @@ export async function discoverRoutesWithMetadata(
 
       result.filesProcessed++;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       result.failedFiles.push({ file, error: errorMessage });
 
       if (cfg.throwOnError) {
@@ -238,8 +246,7 @@ async function findRoutesDirectory(
     });
 
     if (files.length > 0) {
-      debug &&
-        consola.info(`[DiscoverRoutes] Found routes in: ${commonPath}`);
+      debug && consola.info(`[DiscoverRoutes] Found routes in: ${commonPath}`);
       return fullPath;
     }
   }
@@ -261,7 +268,10 @@ async function processRouteFile(
   const RouterClass = module.default;
 
   if (!RouterClass) {
-    debug && consola.warn(`[DiscoverRoutes] No default export in ${relative(process.cwd(), file)}`);
+    debug &&
+      consola.warn(
+        `[DiscoverRoutes] No default export in ${relative(process.cwd(), file)}`,
+      );
     return null;
   }
 

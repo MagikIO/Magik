@@ -1,30 +1,33 @@
-import consola from 'consola';
-import express, { type Express } from 'express';
-import gradient from 'gradient-string';
+import { EventEmitter } from 'node:events';
 import {
   createServer,
   type IncomingMessage,
   type Server,
   type ServerResponse,
-} from 'http';
-import { EventEmitter } from 'events';
-import { EventEngine } from '../engines/EventEngine';
-import { MiddlewareEngine } from '../engines/MiddlewareEngine';
-import { PluginEngine } from '../engines/PluginEngine';
-import { RouterManager } from '../engines/RouterManager';
-import type { ServerEvent, ServerStatusType } from '../types/events';
-import type { MiddlewareCategory } from '../types/middleware';
-import type { MagikPlugin } from '../types/plugins';
-import type { PathSegment } from '../types/routes';
-import type { IMagikServer, MagikServerConfig } from '../types/server';
-import type { IMagikDatabaseAdapter, MagikDatabaseConfig } from '../types/database';
-import { discoverRoutes } from './discoverRoutes';
+} from 'node:http';
+import consola from 'consola';
+import express, { type Express } from 'express';
+import gradient from 'gradient-string';
+import { EventEngine } from '../engines/EventEngine.js';
+import { MiddlewareEngine } from '../engines/MiddlewareEngine.js';
+import { PluginEngine } from '../engines/PluginEngine.js';
+import { RouterManager } from '../engines/RouterManager.js';
+import type {
+  IMagikDatabaseAdapter,
+  MagikDatabaseConfig,
+} from '../types/database.js';
+import type { ServerEvent, ServerStatusType } from '../types/events.js';
+import type { MiddlewareCategory } from '../types/middleware.js';
+import type { MagikPlugin } from '../types/plugins.js';
+import type { PathSegment } from '../types/routes.js';
+import type { IMagikServer, MagikServerConfig } from '../types/server.js';
+import { discoverRoutes } from './discoverRoutes.js';
 
 const magikEventEmitter = new EventEmitter();
 
 /**
  * MagikServer is the main server class that orchestrates all components.
- * 
+ *
  * It provides:
  * - Express application setup
  * - Plugin management
@@ -32,17 +35,17 @@ const magikEventEmitter = new EventEmitter();
  * - Route management with auto-discovery
  * - Event system for lifecycle hooks
  * - Optional database connection via adapter pattern
- * 
+ *
  * @typeParam TServerName - String literal type for the server name
  * @typeParam TAuthTypes - String literal union of auth type names
  * @typeParam TConnection - Database connection type
  * @typeParam TServices - Database service names
- * 
+ *
  * @example
  * ```typescript
  * // Minimal setup
  * const server = await MagikServer.init({ name: 'my-api' });
- * 
+ *
  * // Full setup with database and auth
  * const server = await MagikServer.init({
  *   name: 'my-api',
@@ -70,8 +73,8 @@ export class MagikServer<
   TAuthTypes extends string = string,
   TConnection = unknown,
   TServices extends string = string,
-> implements IMagikServer<TServerName, TConnection, TServices> {
-
+> implements IMagikServer<TServerName, TConnection, TServices>
+{
   // ========== Public Properties ==========
   public readonly name: TServerName;
   public readonly app: Express;
@@ -81,20 +84,25 @@ export class MagikServer<
   public readonly DEBUG: boolean;
 
   // ========== Engines ==========
-  
+
   public readonly routerManager: RouterManager;
   public readonly middlewareEngine: MiddlewareEngine;
   public readonly eventEngine: EventEngine;
 
   // ========== Private ==========
-  
+
   private readonly pluginEngine: PluginEngine;
   private readonly pluginRegistry = new Map<string, MagikPlugin>();
   private readonly mode: 'development' | 'production';
-  private readonly config: MagikServerConfig<TServerName, TAuthTypes, TConnection, TServices>;
-  
+  private readonly config: MagikServerConfig<
+    TServerName,
+    TAuthTypes,
+    TConnection,
+    TServices
+  >;
+
   // ========== Database ==========
-  
+
   private readonly databaseConfig?: MagikDatabaseConfig<TConnection, TServices>;
   private databaseAdapter?: IMagikDatabaseAdapter<TConnection, TServices>;
   private primaryServiceName?: TServices;
@@ -126,11 +134,11 @@ export class MagikServer<
 
   /**
    * Initialize a new MagikServer.
-   * 
+   *
    * This is the recommended way to create a server instance.
    * It handles all setup including database connection and returns
    * a ready-to-use server.
-   * 
+   *
    * @param config - Server configuration
    * @returns Promise resolving to the initialized server
    */
@@ -157,17 +165,25 @@ export class MagikServer<
 
   // ========== Constructor ==========
 
-  private constructor(config: MagikServerConfig<TServerName, TAuthTypes, TConnection, TServices>) {
+  private constructor(
+    config: MagikServerConfig<TServerName, TAuthTypes, TConnection, TServices>,
+  ) {
     this.config = config;
     this.name = config.name;
-    this.port = this.normalizePort(config.port ?? process.env.PORT ?? '5000');
-    this.DEBUG = config.debug ?? process.env.DEBUG === 'true';
-    this.mode = config.mode ?? (process.env.NODE_ENV as 'development' | 'production') ?? 'development';
+    this.port = this.normalizePort(config.port ?? process.env['PORT'] ?? '5000');
+    this.DEBUG = config.debug ?? process.env['DEBUG'] === 'true';
+    this.mode =
+      config.mode ??
+      (process.env['NODE_ENV'] as 'development' | 'production') ??
+      'development';
 
     // Store database config
     this.databaseConfig = config.database;
     if (config.database) {
-      this.databaseAdapter = config.database.adapter as IMagikDatabaseAdapter<TConnection, TServices>;
+      this.databaseAdapter = config.database.adapter as IMagikDatabaseAdapter<
+        TConnection,
+        TServices
+      >;
       this.primaryServiceName = config.database.primaryService;
     }
 
@@ -178,7 +194,11 @@ export class MagikServer<
     this.server = createServer(this.app);
 
     // Initialize engines with auth config
-    this.middlewareEngine = new MiddlewareEngine(this.app, this.DEBUG, config.auth);
+    this.middlewareEngine = new MiddlewareEngine(
+      this.app,
+      this.DEBUG,
+      config.auth,
+    );
     this.eventEngine = new EventEngine(this.DEBUG);
     this.pluginEngine = new PluginEngine(this);
     this.routerManager = new RouterManager(this);
@@ -204,12 +224,16 @@ export class MagikServer<
         for (const preset of this.config.presets) {
           this.middlewareEngine.registerPreset(preset);
         }
-        this.DEBUG && consola.success(`[MagikServer] Loaded ${this.config.presets.length} middleware preset(s)`);
+        this.DEBUG &&
+          consola.success(
+            `[MagikServer] Loaded ${this.config.presets.length} middleware preset(s)`,
+          );
       }
 
       // Apply middleware by category (from loaded presets)
       this.setupMiddleware('security');
-      this.DEBUG && consola.success('[MagikServer] Security middleware applied');
+      this.DEBUG &&
+        consola.success('[MagikServer] Security middleware applied');
 
       this.setupMiddleware('parser');
       this.DEBUG && consola.success('[MagikServer] Parser middleware applied');
@@ -251,42 +275,62 @@ export class MagikServer<
    */
   private async connectDatabase(): Promise<void> {
     if (!this.databaseConfig || !this.databaseAdapter) {
-      this.DEBUG && consola.info('[MagikServer] No database configured, skipping');
+      this.DEBUG &&
+        consola.info('[MagikServer] No database configured, skipping');
       return;
     }
 
-    const { autoConnect = true, primaryService, connectionOptions } = this.databaseConfig;
+    const {
+      autoConnect = true,
+      primaryService,
+      connectionOptions,
+    } = this.databaseConfig;
 
     if (!autoConnect) {
-      this.DEBUG && consola.info('[MagikServer] Database autoConnect disabled, skipping');
+      this.DEBUG &&
+        consola.info('[MagikServer] Database autoConnect disabled, skipping');
       return;
     }
 
     if (!connectionOptions?.uri) {
-      this.DEBUG && consola.warn('[MagikServer] No connection URI provided, skipping database connection');
+      this.DEBUG &&
+        consola.warn(
+          '[MagikServer] No connection URI provided, skipping database connection',
+        );
       return;
     }
 
     try {
-      this.DEBUG && consola.start(`[MagikServer] Connecting to database (${primaryService})...`);
+      this.DEBUG &&
+        consola.start(
+          `[MagikServer] Connecting to database (${primaryService})...`,
+        );
 
       const result = await this.databaseAdapter.connect({
         ...connectionOptions,
         serviceName: primaryService,
         hooks: {
           onConnected: () => {
-            consola.success(`[MagikServer] Database connected (${primaryService})`);
+            consola.success(
+              `[MagikServer] Database connected (${primaryService})`,
+            );
           },
           onDisconnected: () => {
-            consola.info(`[MagikServer] Database disconnected (${primaryService})`);
+            consola.info(
+              `[MagikServer] Database disconnected (${primaryService})`,
+            );
           },
           onError: (error) => {
-            consola.error(`[MagikServer] Database error (${primaryService}):`, error);
+            consola.error(
+              `[MagikServer] Database error (${primaryService}):`,
+              error,
+            );
           },
         },
       });
 
-      this.DEBUG && consola.success(`[MagikServer] Database connected: ${result.state}`);
+      this.DEBUG &&
+        consola.success(`[MagikServer] Database connected: ${result.state}`);
     } catch (error) {
       consola.error('[MagikServer] Failed to connect to database:', error);
       throw error;
@@ -303,7 +347,8 @@ export class MagikServer<
     if (!autoDisconnect) return;
 
     try {
-      this.DEBUG && consola.start('[MagikServer] Disconnecting from database...');
+      this.DEBUG &&
+        consola.start('[MagikServer] Disconnecting from database...');
       await this.databaseAdapter.disconnectAll();
       this.DEBUG && consola.success('[MagikServer] Database disconnected');
     } catch (error) {
@@ -315,7 +360,7 @@ export class MagikServer<
 
   /**
    * Install a plugin.
-   * 
+   *
    * @param plugin - The plugin to install
    * @returns this for chaining
    */
@@ -412,7 +457,9 @@ export class MagikServer<
       }
 
       // Discover and register application routes
-      const routeDefinitions = await discoverRoutes(this.config.routeDiscoveryOptions);
+      const routeDefinitions = await discoverRoutes(
+        this.config.routeDiscoveryOptions,
+      );
 
       for (const [prefix, routes] of routeDefinitions) {
         const engine = this.routerManager.register(prefix);
@@ -439,7 +486,6 @@ export class MagikServer<
     }
   }
 
-
   // ========== Server Lifecycle ==========
 
   private async startServer() {
@@ -459,7 +505,7 @@ export class MagikServer<
 
   private listenToServer() {
     const host = this.config.host ?? '0.0.0.0';
-    
+
     this.server.listen(this.port, host, async () => {
       this.prettyLog();
       await this.eventEngine.emitAsync('afterStart');
@@ -471,7 +517,7 @@ export class MagikServer<
    */
   async shutdownServer(): Promise<void> {
     if (this.status === 'SHUTTING_DOWN') return;
-    
+
     this.status = 'SHUTTING_DOWN';
     consola.info('[MagikServer] Shutting down...');
 
@@ -515,10 +561,14 @@ export class MagikServer<
 
     console.log(cyanToPurple(magikArt));
     consola.success(`${this.name} is running on port ${this.port}`);
-    
+
     if (this.databaseAdapter && this.primaryServiceName) {
-      const dbConnected = this.databaseAdapter.isConnected(this.primaryServiceName);
-      consola.info(`Database: ${dbConnected ? '✅ Connected' : '❌ Not connected'}`);
+      const dbConnected = this.databaseAdapter.isConnected(
+        this.primaryServiceName,
+      );
+      consola.info(
+        `Database: ${dbConnected ? '✅ Connected' : '❌ Not connected'}`,
+      );
     }
   }
 

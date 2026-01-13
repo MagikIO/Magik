@@ -1,7 +1,12 @@
 import consola from 'consola';
-import type { ErrorRequestHandler, Request, Response, NextFunction } from 'express-serve-static-core';
-import type { MagikPlugin } from '../types/plugins';
-import type { IMagikServer } from '../types/server';
+import type {
+  ErrorRequestHandler,
+  NextFunction,
+  Request,
+  Response,
+} from 'express-serve-static-core';
+import type { MagikPlugin } from '../types/plugins.js';
+import type { IMagikServer } from '../types/server.js';
 
 /**
  * ErrorHandlingPlugin provides global error handling for the server
@@ -51,11 +56,13 @@ export class ErrorHandlingPlugin implements MagikPlugin {
           ...(server.DevMode && { stack: error.stack }),
         });
       } else {
-        res.status(statusCode).send(
-          server.DevMode
-            ? `<pre>${error.stack}</pre>`
-            : 'Internal Server Error',
-        );
+        res
+          .status(statusCode)
+          .send(
+            server.DevMode
+              ? `<pre>${error.stack}</pre>`
+              : 'Internal Server Error',
+          );
       }
     };
 

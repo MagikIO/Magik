@@ -1,9 +1,9 @@
-import type { MiddlewarePreset } from '../types/middleware';
-import { parserPreset } from './parserPreset';
-import { securityPreset } from './securityPreset';
+import type { MiddlewarePreset } from '../types/middleware.js';
+import { parserPreset } from './parserPreset.js';
+import { securityPreset } from './securityPreset.js';
 
-export { parserPreset } from './parserPreset';
-export { securityPreset } from './securityPreset';
+export { parserPreset } from './parserPreset.js';
+export { securityPreset } from './securityPreset.js';
 
 /**
  * All built-in middleware presets.

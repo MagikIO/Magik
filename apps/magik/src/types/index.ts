@@ -3,135 +3,126 @@
 // ============================================================================
 export type {
   AuthConfig,
-  ExtractAuthTypes,
+  AuthMiddlewareMap,
   AuthTypes,
   DefaultAuthTypes,
-  AuthMiddlewareMap,
-} from './auth';
+  ExtractAuthTypes,
+} from './auth.js';
 
 export {
-  isRoleArray,
-  createPlaceholderAuth,
-  createPassthroughAuth,
   createDenyAuth,
-} from './auth';
+  createPassthroughAuth,
+  createPlaceholderAuth,
+  isRoleArray,
+} from './auth.js';
 
 // ============================================================================
 // Database Types
 // ============================================================================
 export type {
-  ConnectionState,
-  ConnectionOptions,
   ConnectionHooks,
+  ConnectionOptions,
   ConnectionResult,
+  ConnectionState,
   IMagikDatabaseAdapter,
-  MagikDatabaseConfig,
   InferConnection,
   InferServices,
-} from './database';
+  MagikDatabaseConfig,
+} from './database.js';
 
-export { isDatabaseAdapter } from './database';
-
-// ============================================================================
-// Repository Types
-// ============================================================================
-export type {
-  QueryOptions,
-  PopulateOptions,
-  IRepository,
-  IRepositoryRegistry,
-  IRepositoryFactory,
-  IExtendedRepository,
-  RepositoryConfig,
-  InferEntity,
-  InferId,
-} from './repository';
-
-// ============================================================================
-// User Adapter Types
-// ============================================================================
-export type {
-  IUserAdapter,
-  SimpleUser,
-  InferUser,
-} from './user-adapter';
-
-export {
-  GenericUserAdapter,
-  SimpleUserAdapter,
-  isUserAdapter,
-  createUserAdapter,
-} from './user-adapter';
-
+export { isDatabaseAdapter } from './database.js';
 // ============================================================================
 // Engine Types
 // ============================================================================
 export type {
-  IMiddlewareEngine,
-  IRouteEngine,
-  IPluginEngine,
   IEventEngine,
-} from './engines';
-
+  IMiddlewareEngine,
+  IPluginEngine,
+  IRouteEngine,
+} from './engines.js';
 // ============================================================================
 // Event Types
 // ============================================================================
 export type {
+  EventHandler,
+  EventHandlerMap,
   ServerEvent,
   ServerStatus,
   ServerStatusType,
-  EventHandler,
-  EventHandlerMap,
-} from './events';
-
+} from './events.js';
 // ============================================================================
 // Middleware Types
 // ============================================================================
 export type {
-  MagikMiddleware,
-  MagikErrorHandler,
-  MiddlewareCategory,
   AuthMiddlewareMap as LegacyAuthMiddlewareMap,
-  MiddlewareFn,
+  MagikErrorHandler,
+  MagikMiddleware,
+  MiddlewareCategory,
   MiddlewareConfig,
+  MiddlewareFn,
   MiddlewarePreset,
-} from './middleware';
-
+} from './middleware.js';
 // ============================================================================
 // Plugin Types
 // ============================================================================
 export type {
+  MagikPlugin,
   MagikPluginConfig,
   PluginRouteMap,
-  MagikPlugin,
-} from './plugins';
-
+} from './plugins.js';
+// ============================================================================
+// Repository Types
+// ============================================================================
+export type {
+  IExtendedRepository,
+  InferEntity,
+  InferId,
+  IRepository,
+  IRepositoryFactory,
+  IRepositoryRegistry,
+  PopulateOptions,
+  QueryOptions,
+  RepositoryConfig,
+} from './repository.js';
 // ============================================================================
 // Route Types
 // ============================================================================
 export type {
-  PathSegment,
   HTTPMethod,
-  ValidationSchema,
-  MagikRequest,
   MagikGetRequest,
-  MagikRouteFn,
   MagikGetRouteFn,
-  UploadConfig,
-  RouteDefinition,
-  TypedRouteConfig,
+  MagikRequest,
+  MagikRouteFn,
+  PathSegment,
   RouteConfig,
+  RouteDefinition,
   RouteDiscoveryConfig,
-} from './routes';
-
+  TypedRouteConfig,
+  UploadConfig,
+  ValidationSchema,
+} from './routes.js';
 // ============================================================================
 // Server Types
 // ============================================================================
 export type {
-  ServerStatus as ServerStatusEnum,
-  MagikServerConfig,
   IMagikServer,
   InferAuthTypes,
   InferDbConnection,
   InferDbServices,
-} from './server';
+  MagikServerConfig,
+  ServerStatus as ServerStatusEnum,
+} from './server.js';
+// ============================================================================
+// User Adapter Types
+// ============================================================================
+export type {
+  InferUser,
+  IUserAdapter,
+  SimpleUser,
+} from './user-adapter.js';
+export {
+  createUserAdapter,
+  GenericUserAdapter,
+  isUserAdapter,
+  SimpleUserAdapter,
+} from './user-adapter.js';

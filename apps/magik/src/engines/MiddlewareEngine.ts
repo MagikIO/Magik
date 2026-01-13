@@ -1,21 +1,25 @@
 import consola from 'consola';
 import type { Express } from 'express';
 import type { RequestHandler } from 'express-serve-static-core';
-import type { IMiddlewareEngine } from '../types/engines';
+import type {
+  AuthConfig,
+  AuthMiddlewareMap,
+  AuthTypes,
+} from '../types/auth.js';
+import { isRoleArray } from '../types/auth.js';
+import type { IMiddlewareEngine } from '../types/engines.js';
 import type {
   MiddlewareCategory,
   MiddlewareConfig,
   MiddlewarePreset,
-} from '../types/middleware';
-import type { AuthConfig, AuthTypes, AuthMiddlewareMap } from '../types/auth';
-import { isRoleArray } from '../types/auth';
+} from '../types/middleware.js';
 
 /**
  * MiddlewareEngine manages middleware registration, ordering, and application.
- * 
+ *
  * Now accepts auth configuration at construction time, allowing users to
  * define their own auth types rather than using hardcoded defaults.
- * 
+ *
  * @example
  * ```typescript
  * const middlewareEngine = new MiddlewareEngine(app, true, {
@@ -58,16 +62,17 @@ export class MiddlewareEngine implements IMiddlewareEngine {
 
   /**
    * Configure authentication middleware from config.
-   * 
+   *
    * This can be called after construction to update auth configuration.
    */
   public configureAuth(config: AuthConfig): this {
     // Set handlers
     if (config.handlers) {
       this.authMiddleware = { ...config.handlers };
-      this.debug && consola.info(
-        `[MiddlewareEngine] Configured ${Object.keys(config.handlers).length} auth handler(s)`,
-      );
+      this.debug &&
+        consola.info(
+          `[MiddlewareEngine] Configured ${Object.keys(config.handlers).length} auth handler(s)`,
+        );
     }
 
     // Set role handler
@@ -112,7 +117,10 @@ export class MiddlewareEngine implements IMiddlewareEngine {
     try {
       this.validateMiddleware(config);
       this.middlewareRegistry.set(config.name, config);
-      this.debug && consola.info(`[MiddlewareEngine] Registered middleware: ${config.name}`);
+      this.debug &&
+        consola.info(
+          `[MiddlewareEngine] Registered middleware: ${config.name}`,
+        );
       return this;
     } catch (error) {
       consola.error('[MiddlewareEngine] Error registering middleware:', error);
@@ -133,7 +141,8 @@ export class MiddlewareEngine implements IMiddlewareEngine {
    */
   registerPreset(preset: MiddlewarePreset): this {
     this.registerBulk(preset.middlewares);
-    this.debug && consola.info(`[MiddlewareEngine] Registered preset: ${preset.name}`);
+    this.debug &&
+      consola.info(`[MiddlewareEngine] Registered preset: ${preset.name}`);
     return this;
   }
 
@@ -164,7 +173,9 @@ export class MiddlewareEngine implements IMiddlewareEngine {
    */
   applyCategory(category: MiddlewareCategory): this {
     this.orderMiddleware();
-    const ordered = this.orderedMiddleware.filter((m) => m.category === category);
+    const ordered = this.orderedMiddleware.filter(
+      (m) => m.category === category,
+    );
     this.applyMiddleware(ordered);
 
     this.debug &&
@@ -177,7 +188,7 @@ export class MiddlewareEngine implements IMiddlewareEngine {
 
   /**
    * Get the auth middleware handler for the given auth type.
-   * 
+   *
    * @param auth - Auth type name or array of roles
    * @returns The middleware handler
    * @throws Error if auth type is not configured and no fallback exists
@@ -188,7 +199,7 @@ export class MiddlewareEngine implements IMiddlewareEngine {
       if (!this.roleHandler) {
         throw new Error(
           '[MiddlewareEngine] Role-based auth used but no roleHandler configured. ' +
-          'Add a roleHandler to your auth config.',
+            'Add a roleHandler to your auth config.',
         );
       }
       return this.roleHandler(auth);
@@ -196,7 +207,7 @@ export class MiddlewareEngine implements IMiddlewareEngine {
 
     // Handle named auth type
     const middleware = this.authMiddleware[auth];
-    
+
     if (middleware) {
       return middleware;
     }
@@ -208,9 +219,10 @@ export class MiddlewareEngine implements IMiddlewareEngine {
 
     // No handler found - provide helpful error
     const availableTypes = Object.keys(this.authMiddleware);
-    const suggestion = availableTypes.length > 0
-      ? `Available types: ${availableTypes.join(', ')}`
-      : 'No auth types configured. Add handlers to your auth config.';
+    const suggestion =
+      availableTypes.length > 0
+        ? `Available types: ${availableTypes.join(', ')}`
+        : 'No auth types configured. Add handlers to your auth config.';
 
     throw new Error(
       `[MiddlewareEngine] Unknown auth type: "${auth}". ${suggestion}`,
@@ -219,7 +231,7 @@ export class MiddlewareEngine implements IMiddlewareEngine {
 
   /**
    * Add or update a single auth handler.
-   * 
+   *
    * Useful for plugins that want to register auth types.
    */
   setAuthHandler(name: string, handler: RequestHandler): this {
@@ -245,7 +257,9 @@ export class MiddlewareEngine implements IMiddlewareEngine {
     }
 
     if (!config?.handler) {
-      throw new Error(`[MiddlewareEngine] Middleware ${config.name} must have a handler`);
+      throw new Error(
+        `[MiddlewareEngine] Middleware ${config.name} must have a handler`,
+      );
     }
 
     const validCategories: MiddlewareCategory[] = [
@@ -308,7 +322,7 @@ export class MiddlewareEngine implements IMiddlewareEngine {
       try {
         // Detect error handler by parameter count (4 params = error handler)
         const isErrorHandler = m.handler.length === 4;
-        
+
         if (isErrorHandler) {
           // Error handlers must be cast to any to satisfy Express's overload resolution
           this.app.use(m.handler as any);
@@ -316,10 +330,16 @@ export class MiddlewareEngine implements IMiddlewareEngine {
           // Standard middleware handlers
           this.app.use(m.handler as RequestHandler);
         }
-        
-        this.debug && consola.info(`[MiddlewareEngine] Applied: ${m.name}${isErrorHandler ? ' (error handler)' : ''}`);
+
+        this.debug &&
+          consola.info(
+            `[MiddlewareEngine] Applied: ${m.name}${isErrorHandler ? ' (error handler)' : ''}`,
+          );
       } catch (error) {
-        consola.error(`[MiddlewareEngine] Error applying middleware ${m.name}:`, error);
+        consola.error(
+          `[MiddlewareEngine] Error applying middleware ${m.name}:`,
+          error,
+        );
         throw error;
       }
     });
