@@ -1,6 +1,9 @@
 import cors from 'cors';
 import helmet from 'helmet';
-import type { MiddlewarePreset } from '../types/middleware.js';
+import type {
+  MiddlewareFn,
+  MiddlewarePreset,
+} from '../types/middleware.js';
 
 /**
  * Security preset provides essential security middleware
@@ -37,7 +40,7 @@ export const securityPreset: MiddlewarePreset = {
       name: 'cors',
       category: 'security',
       priority: 90,
-      handler: cors(),
+      handler: cors() as MiddlewareFn,
     },
   ],
 };

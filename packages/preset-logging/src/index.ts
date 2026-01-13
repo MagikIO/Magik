@@ -1,3 +1,4 @@
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { MiddlewarePreset } from '@magik_io/magik';
 import chalk from 'chalk';
 import { colorize } from 'consola/utils';
@@ -10,7 +11,7 @@ export const loggingPreset: MiddlewarePreset = {
       name: 'morgan-logger',
       category: 'logging',
       priority: 95,
-      handler: morgan((tokens, req, res) => {
+      handler: morgan((tokens: morgan.TokenIndexer<any, ServerResponse<IncomingMessage>>, req, res) => {
         const blueOnPurple = chalk.bgHex('#cdb4db').hex('#252422').bold;
         const pinkOnCyan = chalk.bgHex('#c0fdff').hex('#252422').bold;
         const yellowOnGray = chalk.bgHex('#edede9').hex('#e9ff70').bold;
@@ -37,10 +38,10 @@ export const loggingPreset: MiddlewarePreset = {
 
         return [
           method,
-          `(${chalk.hex('#ffcc5c')(tokens.status(req, res))})->`,
-          `${chalk.hex('#b5e48c')(tokens.url(req, res))}`,
+          `(${chalk.hex('#ffcc5c')(tokens['status']?.(req, res) ?? '-')})->`,
+          `${chalk.hex('#b5e48c')(tokens['url']?.(req, res) ?? '-')}`,
           colorize('cyan', `|`),
-          colorize('yellowBright', tokens['response-time'](req, res) + 'ms'),
+          colorize('yellowBright', (tokens['response-time']?.(req, res) ?? '0') + 'ms'),
         ].join(' ');
       }),
     },
