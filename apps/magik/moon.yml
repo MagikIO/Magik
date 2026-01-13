@@ -4,7 +4,7 @@
 $schema: 'https://moonrepo.dev/schemas/project.json'
 
 # Project metadata
-type: 'application'
+type: 'library'
 language: 'typescript'
 tags: ['core', 'framework']
 
