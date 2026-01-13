@@ -1,4 +1,4 @@
-import type { RequestHandler } from 'express';
+import type { RequestHandler } from 'express-serve-static-core';
 
 // ============================================================================
 // Auth Configuration
@@ -172,7 +172,7 @@ export function createPlaceholderAuth(authType: string): RequestHandler {
  * Useful for development/testing.
  */
 export function createPassthroughAuth(): RequestHandler {
-  return (_req, _res, next) => next();
+  return (_req, _res, next) => next?.();
 }
 
 /**

@@ -1,10 +1,11 @@
+import type { Router } from 'express';
 import type {
   NextFunction,
   Request,
   RequestHandler,
   Response,
-} from 'express';
-import type { z } from 'zod';
+} from 'express-serve-static-core';
+import type { z, ZodObject } from 'zod';
 import type { AuthTypes } from './auth';
 
 // ============================================================================
@@ -23,7 +24,7 @@ export type HTTPMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 // Validation Schema
 // ============================================================================
 
-export type ValidationSchema = z.ZodSchema<unknown>;
+export type ValidationSchema<Shape extends Record<string, any> = Record<string, any>> = ZodObject<Shape>;
 
 // ============================================================================
 // Request Types
@@ -107,13 +108,12 @@ export interface TypedRouteConfig<
   method?: HTTPMethod;
   auth?: AuthTypes;
   schema?: TSchema;
-  handler: (
-    req: TSchema extends z.ZodSchema
-      ? MagikRequest<z.infer<TSchema>>
-      : MagikGetRequest,
-    res: Response,
-    next?: NextFunction,
-  ) => Promise<unknown> | void | Response;
+  handler: TSchema extends undefined
+    ? (req: MagikGetRequest, res: Response) => Promise<void>
+    : (
+        req: MagikRequest<z.infer<NonNullable<TSchema>>>,
+        res: Response,
+      ) => Promise<void>;
   upload?: UploadConfig;
   middlewares?: RequestHandler[];
   useNext?: boolean;

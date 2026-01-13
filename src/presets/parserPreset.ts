@@ -1,6 +1,6 @@
 import cookieParser from 'cookie-parser';
 import express from 'express';
-import type { RequestHandler } from 'express';
+import type { RequestHandler } from 'express-serve-static-core';
 import methodOverride from 'method-override';
 import type { MiddlewarePreset } from '../types/middleware';
 
