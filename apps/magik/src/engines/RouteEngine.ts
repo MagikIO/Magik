@@ -1,3 +1,12 @@
+import type {
+  AuthTypes,
+  HTTPMethod,
+  IMagikServer,
+  IRouteEngine,
+  MagikRequest,
+  PathSegment,
+  RouteDefinition,
+} from '@magik_io/magik-types';
 import consola from 'consola';
 import { Router } from 'express';
 import type {
@@ -6,15 +15,6 @@ import type {
   Response,
 } from 'express-serve-static-core';
 import z from 'zod/v4';
-import type { AuthTypes } from '../types/auth.js';
-import type { IRouteEngine } from '../types/engines.js';
-import type {
-  HTTPMethod,
-  MagikRequest,
-  PathSegment,
-  RouteDefinition,
-} from '../types/routes.js';
-import type { IMagikServer } from '../types/server.js';
 
 /**
  * RouteEngine manages route registration and request handling for a specific prefix

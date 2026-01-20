@@ -1,6 +1,10 @@
+import type {
+  HTTPMethod,
+  IMagikServer,
+  IRouterManager,
+  PathSegment,
+} from '@magik_io/magik-types';
 import consola from 'consola';
-import type { HTTPMethod, PathSegment } from '../types/routes.js';
-import type { IMagikServer } from '../types/server.js';
 import { RouteEngine } from './RouteEngine.js';
 
 /**
@@ -30,7 +34,7 @@ import { RouteEngine } from './RouteEngine.js';
  * console.log(`Total routes: ${total}`);
  * ```
  */
-export class RouterManager {
+export class RouterManager implements IRouterManager {
   public routes = new Map<PathSegment, RouteEngine>();
 
   constructor(private server: IMagikServer) {}

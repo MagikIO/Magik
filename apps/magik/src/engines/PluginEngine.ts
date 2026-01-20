@@ -1,9 +1,12 @@
+import type {
+  IMagikServer,
+  IPluginEngine,
+  MagikPlugin,
+  PathSegment,
+  PluginRouteMap,
+  ServerEvent,
+} from '@magik_io/magik-types';
 import consola from 'consola';
-import type { IPluginEngine } from '../types/engines.js';
-import type { ServerEvent } from '../types/events.js';
-import type { MagikPlugin, PluginRouteMap } from '../types/plugins.js';
-import type { PathSegment } from '../types/routes.js';
-import type { IMagikServer } from '../types/server.js';
 
 /**
  * PluginEngine manages plugin loading, dependencies, and lifecycle

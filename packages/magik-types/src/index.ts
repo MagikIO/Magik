@@ -39,6 +39,7 @@ export type {
   IMiddlewareEngine,
   IPluginEngine,
   IRouteEngine,
+  IRouterManager
 } from './engines.js';
 // ============================================================================
 // Event Types
