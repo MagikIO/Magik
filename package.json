@@ -15,7 +15,7 @@
     "ci:build": "moon ci",
     "ci:test": "moon run :test --affected",
     "changeset": "changeset",
-    "version": "changeset version",
+    "bump": "changeset version",
     "release": "pnpm build && changeset publish --provenance"
   },
   "keywords": [
