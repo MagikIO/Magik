@@ -5,6 +5,3 @@ tags: ['preset', 'compression', 'middleware']
 
 dependsOn:
   - 'magik'
-
-tasks:
-  extends: 'global'

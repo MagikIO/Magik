@@ -5,6 +5,3 @@ tags: ['preset', 'session', 'middleware']
 
 dependsOn:
   - 'magik'
-
-tasks:
-  extends: 'global'

@@ -5,6 +5,3 @@ tags: ['session', 'redis', 'store']
 
 dependsOn:
   - 'preset-session'
-
-tasks:
-  extends: 'global'
