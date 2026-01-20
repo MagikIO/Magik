@@ -37,10 +37,11 @@
     "@magik_io/magik": "workspace:*"
   },
   "dependencies": {
-    "helmet": "^8.1.0",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "helmet": "^8.1.0"
   },
   "devDependencies": {
+    "@magik_io/magik": "workspace:^",
     "@types/cors": "^2.8.17",
     "typescript": "^5.3.3"
   }

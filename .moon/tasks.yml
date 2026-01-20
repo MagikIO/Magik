@@ -23,14 +23,16 @@ implicitInputs:
 tasks:
   # Development tasks
   dev:
-    command: 'tsc --watch'
+    command: 'pnpm exec tsc --watch'
     local: true
     options:
       persistent: true
 
   # Build tasks
   build:
-    command: 'tsc'
+    command: 'pnpm exec tsc'
+    deps:
+      - '~:build'
     inputs:
       - '@group(sources)'
       - '@group(configs)'
@@ -44,28 +46,28 @@ tasks:
 
   # Type checking
   typecheck:
-    command: 'tsc --noEmit'
+    command: 'pnpm exec tsc --noEmit'
     inputs:
       - '@group(sources)'
       - '@group(configs)'
 
   # Linting
   lint:
-    command: 'biome check .'
+    command: 'pnpm exec biome check .'
     inputs:
       - '@group(sources)'
       - 'biome.json'
 
   # Formatting
   format:
-    command: 'biome format --write .'
+    command: 'pnpm exec biome format --write .'
     inputs:
       - '@group(sources)'
       - 'biome.json'
 
   # Testing
   test:
-    command: 'vitest run'
+    command: 'pnpm exec vitest run'
     inputs:
       - '@group(sources)'
       - '@group(tests)'
@@ -74,7 +76,7 @@ tasks:
       runInCI: true
 
   test-watch:
-    command: 'vitest'
+    command: 'pnpm exec vitest'
     local: true
     options:
       persistent: true

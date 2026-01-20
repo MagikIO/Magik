@@ -9,7 +9,6 @@ const DEFAULT_COMPRESSION_OPTIONS: CompressionOptions = {
   level: 6, // Balance between speed and compression ratio
   filter: (req, res) => {
             // Don't compress if client or proxy says no
-            // @ts-expect-error
             if (req.headers['x-no-compression']) return false;
 
             // Use default compression filter
@@ -49,7 +48,6 @@ export const DefaultCompressionPreset: MiddlewarePreset = {
         level: 6, // Balance between speed and compression ratio
         filter: (req, res) => {
           // Don't compress if client or proxy says no
-          // @ts-expect-error
           if (req.headers['x-no-compression']) return false;
 
           // Use default compression filter

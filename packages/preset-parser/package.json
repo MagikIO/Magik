@@ -42,6 +42,7 @@
     "method-override": "^3.0.0"
   },
   "devDependencies": {
+    "@magik_io/magik": "workspace:^",
     "@types/cookie-parser": "^1.4.7",
     "@types/express": "^5.0.0",
     "@types/method-override": "^0.0.35",

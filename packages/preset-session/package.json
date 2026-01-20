@@ -40,6 +40,7 @@
     "express-session": "^1.18.1"
   },
   "devDependencies": {
+    "@magik_io/magik": "workspace:^",
     "@types/express": "^5.0.0",
     "@types/express-session": "^1.18.0",
     "typescript": "^5.3.3"
