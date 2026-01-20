@@ -5,3 +5,6 @@ tags: ['session', 'memory', 'store', 'development']
 
 dependsOn:
   - 'preset-session'
+
+tasks:
+  extends: 'global'

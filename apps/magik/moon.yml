@@ -8,3 +8,6 @@ tags: ['core', 'framework']
 
 # Dependencies - empty array since this is the core package
 dependsOn: []
+
+tasks:
+  extends: 'global'

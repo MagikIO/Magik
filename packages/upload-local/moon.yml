@@ -5,3 +5,6 @@ tags: ['upload', 'local', 'storage']
 
 dependsOn:
   - 'magik'
+
+tasks:
+  extends: 'global'
