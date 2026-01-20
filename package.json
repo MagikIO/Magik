@@ -13,7 +13,10 @@
     "format": "moon run :format",
     "clean": "moon run :clean",
     "ci:build": "moon ci",
-    "ci:test": "moon run :test --affected"
+    "ci:test": "moon run :test --affected",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "pnpm build && changeset publish --provenance"
   },
   "keywords": [
     "express",
@@ -40,6 +43,7 @@
   "packageManager": "pnpm@9.15.4",
   "devDependencies": {
     "@biomejs/biome": "^2.3.11",
+    "@changesets/cli": "^2.29.8",
     "@moonrepo/cli": "^1.30.3",
     "typescript": "^5.3.3",
     "vitest": "^4.0.16"
