@@ -5,6 +5,7 @@ $schema: './cache/schemas/workspace.json'
 
 projects:
   magik: 'apps/magik'
+  magikTypes: 'packages/magik-types'
   preCompression: 'packages/preset-compression'
   preLogging: 'packages/preset-logging'
   preParser: 'packages/preset-parser'
