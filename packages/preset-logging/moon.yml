@@ -1,8 +1,6 @@
 # moon project configuration for @magik_io/preset-logging
 $schema: 'https://moonrepo.dev/schemas/project.json'
 
-type: 'library'
-language: 'typescript'
 tags: ['preset', 'logging', 'middleware']
 
 dependsOn:

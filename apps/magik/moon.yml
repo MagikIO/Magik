@@ -4,8 +4,6 @@
 $schema: 'https://moonrepo.dev/schemas/project.json'
 
 # Project metadata
-type: 'library'
-language: 'typescript'
 tags: ['core', 'framework']
 
 # Dependencies - empty array since this is the core package
