@@ -16,7 +16,8 @@
     "ci:test": "moon run :test --affected",
     "changeset": "changeset",
     "bump": "changeset version",
-    "release": "pnpm build && changeset publish --provenance"
+    "release": "pnpm build && changeset publish --provenance",
+    "release:local": "pnpm build && changeset publish"
   },
   "keywords": [
     "express",
