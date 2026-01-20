@@ -6,6 +6,10 @@ $schema: './cache/schemas/workspace.json'
 projects:
   - 'apps/*'
   - 'packages/*'
+
+# Inherit global tasks
+extends: 'tasks.yml'
+
 vcs:
   defaultBranch: 'main'
   provider: 'github'
