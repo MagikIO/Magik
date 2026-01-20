@@ -5,6 +5,17 @@ import {
   type Server,
   type ServerResponse,
 } from 'node:http';
+import type {
+  IMagikDatabaseAdapter,
+  IMagikServer,
+  MagikDatabaseConfig,
+  MagikPlugin,
+  MagikServerConfig,
+  MiddlewareCategory,
+  PathSegment,
+  ServerEvent,
+  ServerStatusType,
+} from '@magik_io/magik-types';
 import consola from 'consola';
 import express, { type Express } from 'express';
 import gradient from 'gradient-string';
@@ -12,15 +23,6 @@ import { EventEngine } from '../engines/EventEngine.js';
 import { MiddlewareEngine } from '../engines/MiddlewareEngine.js';
 import { PluginEngine } from '../engines/PluginEngine.js';
 import { RouterManager } from '../engines/RouterManager.js';
-import type {
-  IMagikDatabaseAdapter,
-  MagikDatabaseConfig,
-} from '../types/database.js';
-import type { ServerEvent, ServerStatusType } from '../types/events.js';
-import type { MiddlewareCategory } from '../types/middleware.js';
-import type { MagikPlugin } from '../types/plugins.js';
-import type { PathSegment } from '../types/routes.js';
-import type { IMagikServer, MagikServerConfig } from '../types/server.js';
 import { discoverRoutes } from './discoverRoutes.js';
 
 const magikEventEmitter = new EventEmitter();
@@ -170,7 +172,9 @@ export class MagikServer<
   ) {
     this.config = config;
     this.name = config.name;
-    this.port = this.normalizePort(config.port ?? process.env['PORT'] ?? '5000');
+    this.port = this.normalizePort(
+      config.port ?? process.env['PORT'] ?? '5000',
+    );
     this.DEBUG = config.debug ?? process.env['DEBUG'] === 'true';
     this.mode =
       config.mode ??

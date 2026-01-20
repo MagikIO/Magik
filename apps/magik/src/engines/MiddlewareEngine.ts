@@ -1,18 +1,16 @@
+import {
+  type AuthConfig,
+  type AuthMiddlewareMap,
+  type AuthTypes,
+  type IMiddlewareEngine,
+  isRoleArray,
+  type MiddlewareCategory,
+  type MiddlewareConfig,
+  type MiddlewarePreset,
+} from '@magik_io/magik-types';
 import consola from 'consola';
 import type { Express } from 'express';
 import type { RequestHandler } from 'express-serve-static-core';
-import type {
-  AuthConfig,
-  AuthMiddlewareMap,
-  AuthTypes,
-} from '../types/auth.js';
-import { isRoleArray } from '../types/auth.js';
-import type { IMiddlewareEngine } from '../types/engines.js';
-import type {
-  MiddlewareCategory,
-  MiddlewareConfig,
-  MiddlewarePreset,
-} from '../types/middleware.js';
 
 /**
  * MiddlewareEngine manages middleware registration, ordering, and application.

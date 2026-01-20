@@ -1,7 +1,6 @@
+import type { IEventEngine, ServerEvent, ServerEventMap } from '@magik_io/magik-types';
 import consola from 'consola';
 import { EventEmitter } from 'events';
-import type { IEventEngine } from '../types/engines.js';
-import type { ServerEvent, ServerEventMap } from '../types/events.js';
 
 /**
  * EventEngine handles server lifecycle events and custom event handling

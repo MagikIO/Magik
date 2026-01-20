@@ -1,13 +1,13 @@
 import { existsSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
-import consola from 'consola';
-import fg from 'fast-glob';
-import { getBasePath } from '../decorators/route.js';
 import type {
   PathSegment,
   RouteDefinition,
   RouteDiscoveryConfig,
-} from '../types/routes.js';
+} from '@magik_io/magik-types';
+import consola from 'consola';
+import fg from 'fast-glob';
+import { getBasePath } from '../decorators/route.js';
 
 // ============================================================================
 // Types

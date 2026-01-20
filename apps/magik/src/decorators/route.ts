@@ -3,7 +3,7 @@ import type {
   HTTPMethod,
   PathSegment,
   RouteDefinition,
-} from '../types/routes.js';
+} from '@magik_io/magik-types';
 
 // ============================================================================
 // Metadata Keys

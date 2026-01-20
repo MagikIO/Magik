@@ -1,52 +1,3 @@
-// Core
-
-export { discoverRoutes } from './core/discoverRoutes.js';
-export { MagikServer } from './core/MagikServer.js';
-
-// Decorators
-export {
-  Delete,
-  Get,
-  getBasePath,
-  getRoutes,
-  Patch,
-  Post,
-  Put,
-  Router,
-} from './decorators/route.js';
-// Engines
-export {
-  EventEngine,
-  MiddlewareEngine,
-  PluginEngine,
-  RouteEngine,
-  RouterManager,
-} from './engines/index.js';
-// Factories
-export { createRoute } from './factories/route.js';
-export type { AuthMiddlewareOptions } from './helpers/auth.js';
-// Auth Helpers
-export {
-  createAllPermissionsMiddleware,
-  createAllRolesMiddleware,
-  createAuthenticatedMiddleware,
-  createAuthWithRolesMiddleware,
-  createPermissionHandlerFactory,
-  createPermissionMiddleware,
-  createRoleHandlerFactory,
-  createRoleMiddleware,
-  createTwoFactorMiddleware,
-} from './helpers/auth.js';
-// Plugins
-export {
-  DebugPlugin,
-  ErrorHandlingPlugin,
-  GracefulShutdownPlugin,
-  RateLimiterPlugin,
-} from './plugins/index.js';
-// Presets
-export { allPresets, parserPreset, securityPreset } from './presets/index.js';
-
 // Types
 export type {
   // Auth
@@ -112,8 +63,7 @@ export type {
   TypedRouteConfig,
   UploadConfig,
   ValidationSchema,
-} from './types/index.js';
-
+} from '@magik_io/magik-types';
 // Re-export utilities from types
 export {
   createDenyAuth,
@@ -125,4 +75,49 @@ export {
   isRoleArray,
   isUserAdapter,
   SimpleUserAdapter,
-} from './types/index.js';
+} from '@magik_io/magik-types';
+export { discoverRoutes } from './core/discoverRoutes.js';
+export { MagikServer } from './core/MagikServer.js';
+// Decorators
+export {
+  Delete,
+  Get,
+  getBasePath,
+  getRoutes,
+  Patch,
+  Post,
+  Put,
+  Router,
+} from './decorators/route.js';
+// Engines
+export {
+  EventEngine,
+  MiddlewareEngine,
+  PluginEngine,
+  RouteEngine,
+  RouterManager,
+} from './engines/index.js';
+// Factories
+export { createRoute } from './factories/route.js';
+export type { AuthMiddlewareOptions } from './helpers/auth.js';
+// Auth Helpers
+export {
+  createAllPermissionsMiddleware,
+  createAllRolesMiddleware,
+  createAuthenticatedMiddleware,
+  createAuthWithRolesMiddleware,
+  createPermissionHandlerFactory,
+  createPermissionMiddleware,
+  createRoleHandlerFactory,
+  createRoleMiddleware,
+  createTwoFactorMiddleware,
+} from './helpers/auth.js';
+// Plugins
+export {
+  DebugPlugin,
+  ErrorHandlingPlugin,
+  GracefulShutdownPlugin,
+  RateLimiterPlugin,
+} from './plugins/index.js';
+// Presets
+export { allPresets, parserPreset, securityPreset } from './presets/index.js';
