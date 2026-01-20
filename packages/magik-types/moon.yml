@@ -1,0 +1,4 @@
+# moon project configuration for @magik_io/preset-compression
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+tags: ['types', 'magik']
