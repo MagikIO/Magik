@@ -3,5 +3,26 @@ $schema: 'https://moonrepo.dev/schemas/project.json'
 
 tags: ['preset', 'session', 'middleware']
 
+project:
+  name: '@magik_io/preset-session'
+  description: 'Session management middleware preset for Magik'
+  
+
+id: 'preSession'
+layer: 'library'
+language: 'typescript'
+stack: 'backend'
+
 dependsOn:
   - 'magik'
+
+tasks:
+  build:
+    command: 'pnpm exec tsc'
+    inputs:
+      - 'src/**/*.ts'
+      - 'tsconfig.json'
+    outputs:
+      - 'dist'
+    deps: 
+      - '~:build'

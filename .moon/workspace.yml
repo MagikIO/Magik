@@ -4,8 +4,16 @@ $schema: './cache/schemas/workspace.json'
 # extends: './shared/workspace.yml'
 
 projects:
-  - 'apps/magik'
-  - 'packages/*'
+  magik: 'apps/magik'
+  preCompression: 'packages/preset-compression'
+  preLogging: 'packages/preset-logging'
+  preParser: 'packages/preset-parser'
+  preSecurity: 'packages/preset-security'
+  preSession: 'packages/preset-session'
+  sessionMem: 'packages/session-memory'
+  sessionRedis: 'packages/session-redis'
+  uploadLocal: 'packages/upload-local'
+  uploadS3: 'packages/upload-s3'
 
 vcs:
   defaultBranch: 'main'

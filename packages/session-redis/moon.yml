@@ -4,4 +4,4 @@ $schema: 'https://moonrepo.dev/schemas/project.json'
 tags: ['session', 'redis', 'store']
 
 dependsOn:
-  - 'preset-session'
+  - 'preSession'

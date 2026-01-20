@@ -1,0 +1,73 @@
+$schema: 'https://moonrepo.dev/schemas/tasks.json'
+
+fileGroups:
+  sources:
+    - 'src/**/*'
+  configs:
+    - '*.config.*'
+    - 'tsconfig.json'
+    - 'package.json'
+  tests:
+    - 'src/**/*.test.ts'
+    - 'src/**/*.spec.ts'
+
+implicitInputs:
+  - 'package.json'
+
+tasks:
+  # Development tasks
+  dev:
+    command: 'pnpm exec tsc --watch'
+    options:
+      persistent: true
+
+  # Build tasks
+  build:
+    command: 'pnpm exec tsc'
+    deps:
+      - '~:build'
+    inputs:
+      - '@group(sources)'
+      - '@group(configs)'
+    outputs:
+      - 'dist'
+
+  # Clean task
+  clean:
+    command: 'rm -rf dist'
+
+  # Type checking
+  typecheck:
+    command: 'pnpm exec tsc --noEmit'
+    inputs:
+      - '@group(sources)'
+      - '@group(configs)'
+
+  # Linting
+  lint:
+    command: 'pnpm exec biome check .'
+    inputs:
+      - '@group(sources)'
+      - 'biome.json'
+
+  # Formatting
+  format:
+    command: 'pnpm exec biome format --write .'
+    inputs:
+      - '@group(sources)'
+      - 'biome.json'
+
+  # Testing
+  test:
+    command: 'pnpm exec vitest run'
+    inputs:
+      - '@group(sources)'
+      - '@group(tests)'
+      - 'vitest.config.ts'
+    options:
+      runInCI: true
+
+  test-watch:
+    command: 'pnpm exec vitest'
+    options:
+      persistent: true
