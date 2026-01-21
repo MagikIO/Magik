@@ -1,5 +1,5 @@
 # moon project configuration for @magik_io/preset-logging
-$schema: 'https://moonrepo.dev/schemas/project.json'
+$schema: '../../.moon/cache/schemas/project.json'
 
 tags: ['preset', 'logging', 'middleware']
 

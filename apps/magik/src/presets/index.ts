@@ -1,4 +1,4 @@
-import type { MiddlewarePreset } from '../types/middleware.js';
+import type { MiddlewarePreset } from '@magik_io/magik-types';
 import { parserPreset } from './parserPreset.js';
 import { securityPreset } from './securityPreset.js';
 

@@ -1,7 +1,7 @@
 # moon project configuration for @magik_io/magik
 # https://moonrepo.dev/docs/config/project
 
-$schema: 'https://moonrepo.dev/schemas/project.json'
+$schema: '../../.moon/cache/schemas/project.json'
 
 # Project metadata
 tags: ['core', 'framework']
