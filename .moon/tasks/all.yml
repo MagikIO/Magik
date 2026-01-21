@@ -23,7 +23,7 @@ tasks:
 
   # Build tasks
   build:
-    command: 'tsc -p tsconfig.json'
+    command: 'pnpm exec tsc -p tsconfig.json'
     deps:
       - '^:build'
     inputs:
