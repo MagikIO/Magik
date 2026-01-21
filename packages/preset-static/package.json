@@ -1,6 +1,6 @@
 {
   "name": "@magik_io/preset-static",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Magik preset for serving static files",
   "type": "module",
   "main": "./dist/index.js",

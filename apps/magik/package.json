@@ -1,6 +1,6 @@
 {
   "name": "@magik_io/magik",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A powerful, plugin-based Express server framework with decorator-based routing, middleware presets, and lifecycle events",
   "type": "module",
   "main": "./dist/index.js",

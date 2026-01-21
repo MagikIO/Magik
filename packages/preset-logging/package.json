@@ -1,6 +1,6 @@
 {
   "name": "@magik_io/preset-logging",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Logging middleware preset for Magik (morgan with colorized output)",
   "type": "module",
   "main": "./dist/index.js",
