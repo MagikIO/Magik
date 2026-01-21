@@ -131,9 +131,9 @@ importers:
         specifier: ^0.1.1
         version: 0.1.1
     devDependencies:
-      '@magik_io/magik':
+      '@magik_io/magik-types':
         specifier: workspace:*
-        version: link:../../apps/magik
+        version: link:../magik-types
       '@types/compression':
         specifier: ^1.8.1
         version: 1.8.1
@@ -165,9 +165,9 @@ importers:
         specifier: ^1.10.1
         version: 1.10.1
     devDependencies:
-      '@magik_io/magik':
+      '@magik_io/magik-types':
         specifier: workspace:*
-        version: link:../../apps/magik
+        version: link:../magik-types
       '@types/morgan':
         specifier: ^1.9.10
         version: 1.9.10

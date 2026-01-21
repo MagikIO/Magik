@@ -1,6 +1,5 @@
+import type { MagikPlugin, MiddlewareConfig } from '@magik_io/magik-types';
 import rateLimit from 'express-rate-limit';
-import type { MiddlewareConfig } from '../types/middleware.js';
-import type { MagikPlugin } from '../types/plugins.js';
 
 export interface RateLimiterOptions {
   /** Time window in milliseconds (default: 15 minutes) */
@@ -58,7 +57,9 @@ export class RateLimiterPlugin implements MagikPlugin {
           windowMs: this.options.windowMs,
           max: this.options.max,
           message: this.options.message,
-          skip: this.options.skip ? ((req) => this.options.skip!(req as any)) : undefined,
+          skip: this.options.skip
+            ? (req) => this.options.skip!(req as any)
+            : undefined,
           standardHeaders: true,
           legacyHeaders: false,
         }) as any,

@@ -1,5 +1,5 @@
+import type { PathSegment, TypedRouteConfig } from '@magik_io/magik-types';
 import type { z } from 'zod';
-import type { PathSegment, TypedRouteConfig } from '../types/routes.js';
 
 /**
  * Factory function to create a typed route configuration

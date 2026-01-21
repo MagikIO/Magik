@@ -1,4 +1,4 @@
-import type { MiddlewareFn, MiddlewarePreset } from '@magik_io/magik';
+import type { MiddlewareFn, MiddlewarePreset } from '@magik_io/magik-types';
 import compression from 'compression';
 
 export type CompressionOptions = Parameters<typeof compression>[0] & { priority?: number };

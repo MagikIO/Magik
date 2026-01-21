@@ -1,9 +1,6 @@
+import type { MiddlewareFn, MiddlewarePreset } from '@magik_io/magik-types';
 import cors from 'cors';
 import helmet from 'helmet';
-import type {
-  MiddlewareFn,
-  MiddlewarePreset,
-} from '../types/middleware.js';
 
 /**
  * Security preset provides essential security middleware

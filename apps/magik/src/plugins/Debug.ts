@@ -1,7 +1,9 @@
+import type {
+  IMagikServer,
+  MagikPlugin,
+  ServerEventMap,
+} from '@magik_io/magik-types';
 import consola from 'consola';
-import type { ServerEventMap } from '../types/events.js';
-import type { MagikPlugin } from '../types/plugins.js';
-import type { IMagikServer } from '../types/server.js';
 
 /**
  * DebugPlugin enables debug logging and request inspection

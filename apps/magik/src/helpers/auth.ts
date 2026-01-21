@@ -1,10 +1,10 @@
+import type { IUserAdapter } from '@magik_io/magik-types';
 import type { RequestHandler } from 'express';
 import type {
   NextFunction,
   Request,
   Response,
 } from 'express-serve-static-core';
-import type { IUserAdapter } from '../types/user-adapter.js';
 
 // ============================================================================
 // Role-Based Middleware Helpers

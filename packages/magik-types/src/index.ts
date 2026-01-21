@@ -57,6 +57,7 @@ export type {
 // ============================================================================
 export type {
   AuthMiddlewareMap as LegacyAuthMiddlewareMap,
+  AuthTypes as NamedAuthTypes,
   MagikErrorHandler,
   MagikMiddleware,
   MiddlewareCategory,

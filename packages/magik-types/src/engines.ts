@@ -1,6 +1,7 @@
-import type { RequestHandler } from 'express';
+import type { RequestHandler } from 'express-serve-static-core';
+import type { AuthTypes } from './auth.js';
 import type { HTTPMethod } from './index.js';
-import type { AuthTypes, MiddlewareConfig } from './middleware.js';
+import type { MiddlewareConfig } from './middleware.js';
 import type { MagikPlugin, PluginRouteMap } from './plugins.js';
 import type { RouteDefinition } from './routes.js';
 

@@ -1,6 +1,5 @@
+import type { IMagikServer, MagikPlugin } from '@magik_io/magik-types';
 import consola from 'consola';
-import type { MagikPlugin } from '../types/plugins.js';
-import type { IMagikServer } from '../types/server.js';
 
 export class GracefulShutdownPlugin implements MagikPlugin {
   config = {

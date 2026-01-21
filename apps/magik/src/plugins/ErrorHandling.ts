@@ -1,3 +1,4 @@
+import type { IMagikServer, MagikPlugin } from '@magik_io/magik-types';
 import consola from 'consola';
 import type {
   ErrorRequestHandler,
@@ -5,8 +6,6 @@ import type {
   Request,
   Response,
 } from 'express-serve-static-core';
-import type { MagikPlugin } from '../types/plugins.js';
-import type { IMagikServer } from '../types/server.js';
 
 /**
  * ErrorHandlingPlugin provides global error handling for the server
