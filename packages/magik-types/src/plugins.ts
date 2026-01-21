@@ -1,7 +1,7 @@
+import type { IMagikServer } from './core.js';
 import type { ServerEvent, ServerEventMap } from './events.js';
 import type { MiddlewareConfig } from './middleware.js';
 import type { PathSegment, RouteDefinition } from './routes.js';
-import type { IMagikServer } from './server.js';
 
 // ============================================================================
 // Plugin Configuration

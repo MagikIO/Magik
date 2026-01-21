@@ -1,12 +1,11 @@
-import type { IncomingMessage, Server, ServerResponse } from 'node:http';
-import type { Express } from 'express';
 import type { AuthConfig } from './auth.js';
-import type { IMagikDatabaseAdapter, MagikDatabaseConfig } from './database.js';
-import type { IEventEngine, IMiddlewareEngine, IRouterManager } from './engines.js';
-import type { ServerStatusType } from './events.js';
+import type { MagikDatabaseConfig } from './database.js';
 import type { MiddlewarePreset } from './middleware.js';
 import type { MagikPlugin } from './plugins.js';
 import type { RouteDiscoveryConfig } from './routes.js';
+
+// Re-export IMagikServer from core for backward compatibility
+export type { IMagikServer } from './core.js';
 
 /**
  * Server status states.
@@ -185,99 +184,6 @@ export interface MagikServerConfig<
    * @default false
    */
   disableRouteDiscovery?: boolean;
-}
-
-// ============================================================================
-// Server Interface
-// ============================================================================
-
-/**
- * Interface for a running MagikServer instance.
- *
- * @typeParam TServerName - String literal type for the server name
- * @typeParam TConnection - Database connection type
- * @typeParam TServices - Database service names
- */
-export interface IMagikServer<
-  TServerName extends string = string,
-  TConnection = unknown,
-  TServices extends string = string,
-> {
-  /** Server name */
-  readonly name: TServerName;
-
-  /** Express application instance */
-  readonly app: Express;
-
-  /** HTTP server instance */
-  readonly server: Server<typeof IncomingMessage, typeof ServerResponse>;
-
-  /** Port the server is listening on */
-  readonly port: number;
-
-  /** Current server status */
-  readonly status: ServerStatusType;
-
-  /** Debug mode enabled */
-  readonly DEBUG: boolean;
-
-  /** Development mode check */
-  readonly DevMode: boolean;
-
-  // ========== Engines ==========
-
-  /** Router manager for handling routes */
-  readonly routerManager: IRouterManager;
-
-  /** Middleware engine for managing middleware */
-  readonly middlewareEngine: IMiddlewareEngine;
-
-  /** Event engine for lifecycle events */
-  readonly eventEngine: IEventEngine;
-
-  // ========== Database ==========
-
-  /**
-   * Database adapter instance (if configured).
-   *
-   * @example
-   * ```typescript
-   * // Get a connection
-   * const conn = server.db?.getConnection('main');
-   *
-   * // Check connection status
-   * if (server.db?.isConnected('main')) {
-   *   // ...
-   * }
-   * ```
-   */
-  readonly db?: IMagikDatabaseAdapter<TConnection, TServices>;
-
-  /**
-   * Primary database connection (if configured).
-   *
-   * Shorthand for `server.db?.getConnection(primaryService)`.
-   */
-  readonly primaryConnection?: TConnection;
-
-  // ========== Methods ==========
-
-  /**
-   * Install a plugin.
-   * @param plugin - The plugin to install
-   */
-  use(plugin: MagikPlugin): Promise<this>;
-
-  /**
-   * Gracefully shutdown the server.
-   *
-   * This will:
-   * 1. Stop accepting new connections
-   * 2. Emit 'beforeStop' event
-   * 3. Close database connections (if autoDisconnect)
-   * 4. Emit 'afterStop' event
-   */
-  shutdownServer(): Promise<void>;
 }
 
 // ============================================================================

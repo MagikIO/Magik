@@ -1,9 +1,8 @@
 import type { RequestHandler } from 'express-serve-static-core';
 import type { AuthTypes } from './auth.js';
-import type { HTTPMethod } from './index.js';
 import type { MiddlewareConfig } from './middleware.js';
 import type { MagikPlugin, PluginRouteMap } from './plugins.js';
-import type { RouteDefinition } from './routes.js';
+import type { HTTPMethod, RouteDefinition } from './routes.js';
 
 // ============================================================================
 // Middleware Engine Interface
