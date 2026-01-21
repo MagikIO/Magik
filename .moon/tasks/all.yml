@@ -3,10 +3,10 @@ $schema: '../cache/schemas/tasks.json'
 fileGroups:
   sources:
     - 'src/**/*'
+    - 'types/**/*'
   configs:
-    - '*.config.*'
-    - 'tsconfig.json'
-    - 'package.json'
+    - '*.config.{js,cjs,mjs}'
+    - '*.json'
   tests:
     - 'src/**/*.test.ts'
     - 'src/**/*.spec.ts'
@@ -23,12 +23,12 @@ tasks:
 
   # Build tasks
   build:
-    command: 'pnpm exec tsc -p tsconfig.json'
+    command: 'tsc -p tsconfig.json'
     deps:
       - '^:build'
     inputs:
-      - '@group(sources)'
-      - '@group(configs)'
+      - 'src/**/*'
+      - 'tsconfig.json'
     outputs:
       - 'dist'
 

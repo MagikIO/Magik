@@ -9,4 +9,3 @@ tags: ['core', 'framework']
 # Dependencies
 dependsOn:
   - 'magikTypes'
-
