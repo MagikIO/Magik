@@ -16,6 +16,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "build:verbose": "tsc --build --verbose",
     "dev": "tsc --watch",
     "clean": "rm -rf dist"
   },
