@@ -23,9 +23,9 @@ tasks:
 
   # Build tasks
   build:
-    command: 'pnpm exec tsc'
+    command: 'pnpm exec tsc -p tsconfig.json'
     deps:
-      - '~:build'
+      - '^:build'
     inputs:
       - '@group(sources)'
       - '@group(configs)'
