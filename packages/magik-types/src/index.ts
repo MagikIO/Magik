@@ -15,7 +15,10 @@ export {
   createPlaceholderAuth,
   isRoleArray,
 } from './auth.js';
-
+// ============================================================================
+// Core Types (for avoiding circular dependencies)
+// ============================================================================
+export type { MagikPluginBase } from './core.js';
 // ============================================================================
 // Database Types
 // ============================================================================
@@ -29,7 +32,6 @@ export type {
   InferServices,
   MagikDatabaseConfig,
 } from './database.js';
-
 export { isDatabaseAdapter } from './database.js';
 // ============================================================================
 // Engine Types
@@ -39,7 +41,7 @@ export type {
   IMiddlewareEngine,
   IPluginEngine,
   IRouteEngine,
-  IRouterManager
+  IRouterManager,
 } from './engines.js';
 // ============================================================================
 // Event Types
@@ -104,10 +106,6 @@ export type {
   UploadConfig,
   ValidationSchema,
 } from './routes.js';
-// ============================================================================
-// Core Types (for avoiding circular dependencies)
-// ============================================================================
-export type { MagikPluginBase } from './core.js';
 // ============================================================================
 // Server Types
 // ============================================================================
