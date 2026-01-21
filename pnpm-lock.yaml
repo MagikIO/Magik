@@ -259,6 +259,22 @@ importers:
         specifier: ^5.3.3
         version: 5.9.3
 
+  packages/preset-static:
+    dependencies:
+      express:
+        specifier: ^4.21.2
+        version: 4.22.1
+    devDependencies:
+      '@magik_io/magik-types':
+        specifier: workspace:^
+        version: link:../magik-types
+      '@types/express':
+        specifier: ^5.0.0
+        version: 5.0.6
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.3
+
   packages/session-memory:
     dependencies:
       '@magik_io/preset-session':
