@@ -119,5 +119,3 @@ export {
   GracefulShutdownPlugin,
   RateLimiterPlugin,
 } from './plugins/index.js';
-// Presets
-export { allPresets, parserPreset, securityPreset } from './presets/index.js';
