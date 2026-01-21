@@ -1,0 +1,46 @@
+{
+  "name": "@magik_io/preset-static",
+  "version": "1.0.0",
+  "description": "Magik preset for serving static files",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "magik",
+    "static",
+    "middleware"
+  ],
+  "author": "Abourass",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MagikIO/Magik.git",
+    "directory": "packages/preset-static"
+  },
+  "peerDependencies": {
+    "@magik_io/magik-types": "workspace:*",
+    "express": "^4.21.2"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@magik_io/magik-types": "workspace:^",
+    "@types/express": "^5.0.0",
+    "typescript": "^5.3.3"
+  }
+}
