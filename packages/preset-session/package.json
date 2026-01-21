@@ -1,6 +1,6 @@
 {
   "name": "@magik_io/preset-session",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Session middleware preset for Magik (express-session, store-agnostic)",
   "type": "module",
   "main": "./dist/index.js",

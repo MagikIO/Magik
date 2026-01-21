@@ -1,6 +1,6 @@
 {
   "name": "@magik_io/preset-security",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Security middleware preset for Magik (Helmet, CORS)",
   "type": "module",
   "main": "./dist/index.js",
