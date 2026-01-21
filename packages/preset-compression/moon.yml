@@ -1,9 +1,0 @@
-# moon project configuration for @magik_io/preset-compression
-$schema: '../../.moon/cache/schemas/project.json'
-
-tags: ['preset', 'compression', 'middleware']
-
-dependsOn:
-  - 'magik'
-
-

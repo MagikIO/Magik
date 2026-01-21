@@ -1,7 +1,0 @@
-# moon project configuration for @magik_io/upload-local
-$schema: '../../.moon/cache/schemas/project.json'
-
-tags: ['upload', 'local', 'storage']
-
-dependsOn:
-  - 'magik'

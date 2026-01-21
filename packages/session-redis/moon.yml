@@ -1,7 +1,0 @@
-# moon project configuration for @magik_io/session-redis
-$schema: '../../.moon/cache/schemas/project.json'
-
-tags: ['session', 'redis', 'store']
-
-dependsOn:
-  - 'preSession'

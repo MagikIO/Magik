@@ -1,7 +1,0 @@
-# moon project configuration for @magik_io/session-memory
-$schema: '../../.moon/cache/schemas/project.json'
-
-tags: ['session', 'memory', 'store', 'development']
-
-dependsOn:
-  - 'preSession'

@@ -1,7 +1,0 @@
-# moon project configuration for @magik_io/preset-parser
-$schema: '../../.moon/cache/schemas/project.json'
-
-tags: ['preset', 'parser', 'middleware']
-
-dependsOn:
-  - 'magik'

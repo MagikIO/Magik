@@ -1,7 +1,0 @@
-# moon project configuration for @magik_io/upload-s3
-$schema: '../../.moon/cache/schemas/project.json'
-
-tags: ['upload', 's3', 'storage']
-
-dependsOn:
-  - 'magik'

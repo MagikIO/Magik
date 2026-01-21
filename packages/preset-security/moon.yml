@@ -1,7 +1,0 @@
-# moon project configuration for @magik_io/preset-security
-$schema: '../../.moon/cache/schemas/project.json'
-
-tags: ['preset', 'security', 'middleware']
-
-dependsOn:
-  - 'magik'
