@@ -7,6 +7,6 @@ $schema: 'https://moonrepo.dev/schemas/project.json'
 tags: ['core', 'framework']
 
 # Dependencies
-dependsOn: [
-  'packages/magik-types',
-]
+dependsOn:
+  - 'magikTypes'
+
