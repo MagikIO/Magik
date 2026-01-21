@@ -1,4 +1,4 @@
-import type { MiddlewareFn, MiddlewarePreset } from '@magik_io/magik';
+import type { MiddlewareFn, MiddlewarePreset } from '@magik_io/magik-types';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import methodOverride from 'method-override';

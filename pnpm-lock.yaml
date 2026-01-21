@@ -177,6 +177,9 @@ importers:
 
   packages/preset-parser:
     dependencies:
+      '@magik_io/magik':
+        specifier: workspace:*
+        version: link:../../apps/magik
       cookie-parser:
         specifier: ^1.4.6
         version: 1.4.7
@@ -187,9 +190,9 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
     devDependencies:
-      '@magik_io/magik':
+      '@magik_io/magik-types':
         specifier: workspace:^
-        version: link:../../apps/magik
+        version: link:../magik-types
       '@types/cookie-parser':
         specifier: ^1.4.7
         version: 1.4.10(@types/express@5.0.6)
